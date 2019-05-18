@@ -1,0 +1,204 @@
+body{
+    background-color: #240101;
+}
+
+.part {
+    background-color: #31ff00;
+    height:  589px;
+    width:  100%;
+    position:  fixed;
+}
+
+.lftyu {
+    background-color: #23ff6e;
+    width: 50%;
+    height:  100%;
+}
+
+.rhtyu {
+    background-color: #ffffff;
+    width: 100%;
+    height: 100%;
+    position:  absolute;
+   
+}
+
+.header.npd {
+    font-size: 38px;
+    margin-top:  36px;
+    margin-left: 81px;
+    position:  absolute;
+}
+
+div#imgpd {
+    position:  absolute;
+    width: 490px;
+    height: 420px;
+    background: #fff;
+    margin-top: 94px;
+    margin-left: 126px;
+    border-radius:  16px;
+}
+
+.ctpyu {
+    position: absolute;
+    width: 627px;
+    height: 531px;
+    background: #ffffff;
+    margin-top: 24px;
+    margin-left: -301px;
+    left:  50%;
+}
+
+.header.pdtd {
+    font-size: 35px;
+    padding:  13px;
+    text-align: center;
+}
+
+.grh {
+    margin-top: 7px;
+    margin-left: 23px;
+}
+
+label#_lb {
+    font-size:  21px;
+    font-weight: 900;
+}
+
+input#create {
+    margin-top: 15px;
+    margin-left: 26px;
+    width: 329px;
+    border-radius: 12px;
+    background: #7523ff;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 900;
+    height: 47px;
+}
+
+input.iopi {
+    margin-top:  13px;
+    border-radius:  12px;
+    height:  47px;
+}
+
+a#cancel_ {
+    position:  absolute;
+    margin-left: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    outline: none;
+    cursor: pointer;
+    background-color: #efefef;
+    padding: 4px 6px 4px 9px;
+    width: 315px;
+    color: #181717;
+    border-radius: 14px;
+    border-color: transparent;
+    font-size: 22px;
+    font-weight: 900;
+    margin-top: 15px;
+}
+
+.ddsdsd {
+    background: #bfbfbf;
+    width:  fit-content;
+    padding:  5px;
+    border-radius: 17px;
+    font-weight: 900;
+    font-size:  13px;
+    padding-left:  14px;
+    padding-right:  13px;
+    margin-left: 275px;
+}
+
+.sdda {
+    position:  absolute;
+    margin-left: 342px;
+    margin-top: -61px;
+}
+
+#select {
+    background-color: #efefef;
+    border: 0;
+    box-shadow: none;
+    box-sizing: border-box;
+    height: 44px;
+    padding-left: 19px;
+    width: 329px;
+    border-radius: 12px;
+    font-size: 19px;
+    margin-top: 14px;
+    border-color: transparent;
+    outline: none;
+}
+
+.header.ypfd {
+    font-size: 34px;
+    text-align: center;
+    padding-top: 21px;
+}
+
+.pfgts {
+    background: #240101;
+    width: 441px;
+    /* height: 431px; */
+    position:  absolute;
+    left:  50%;
+    margin-left: -216px;
+    margin-top: 19px;
+    /* border-radius: 8px; */
+    padding: 20px;
+}
+
+div#pdtimg {
+    background: #240101;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-image: url(../img/car.jpg);
+    background-position: center;
+    background-size: cover;
+    border: 1px solid black;
+}
+
+.pdfgh {
+    color: #d7ee08;
+    background: #240101;
+    padding:  9px;
+    width: 100%;
+    margin-left:  -9px;
+    /* border-radius:  18px; */
+    margin-top:  12px;
+}
+
+.pdtdt {
+    position:  absolute;
+    margin-top: -59px;
+    margin-left: 86px;
+}
+
+button#spdt {
+    position:  absolute;
+    margin-top:  -50px;
+    margin-left: 282px;
+    background: rgba(14,19,24,.15);
+    width: 157px;
+}
+
+div#ptpe {
+    padding-left: 1px;
+    border-radius:  12px;
+    font-weight:  900;
+    font-size:  25px;
+}
+
+div#ptdate {
+    margin-top: 5px;
+    background: rgba(14,19,24,.15);
+    padding-left:  17px;
+    padding-right:  17px;
+    padding-top:  2px;
+    border-radius:  12px;
+}
