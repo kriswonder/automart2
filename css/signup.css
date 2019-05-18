@@ -1,0 +1,124 @@
+._loginc{
+    background: #240101;
+    color: #d7ee08;
+    width: 516px;
+    height: 516px;
+    position: absolute;
+    left: 50%;
+    margin-left: -243px;
+    margin-top: 61px;
+    border-radius: 13px;
+}
+
+body {
+    background: #240101;
+}
+
+.hdl {
+    font-size: 45px;
+    font-weight: 900;
+    text-align: center;
+    margin-top: 50px;
+}
+input#username {
+    height: 50px;
+    width: 291px;
+    border-radius: 15px;
+    border-color: transparent;
+    background-color: #e5e5e5;
+    font-size: 24px;
+    padding-left: 19px;
+    margin-top: 25px;
+    font-weight: 900;
+}
+input#password {
+    height: 50px;
+    width: 291px;
+    border-radius: 15px;
+    border-color: transparent;
+    background-color: #e5e5e5;
+    font-size: 24px;
+    padding-left: 19px;
+    margin-top: 25px;
+    font-weight: 900;
+}
+input#login {
+    background-color: #c900ff;
+    border-color: transparent;
+    width: 293px;
+    height: 50px;
+    font-weight: 600;
+    font-size: 17px;
+    font-family: Century Gothic;
+    cursor: pointer;
+    outline: none;
+    color: #fff;
+    margin-top: 23px;
+    border-radius: 22px;
+    margin-left: -1px;
+}
+
+.inpy {
+    margin-left: 117px;
+}
+
+.inpy.we {
+    margin-top: 17px;
+}
+
+.crdts {
+    font-size: 29px;
+    font-weight: 900;
+}
+
+.pdf {
+    margin-top: 13px;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.hdj {
+    margin-top: 13px;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+input#email {
+    height: 50px;
+    width: 291px;
+    border-radius: 22px;
+    border-color: transparent;
+    background-color: #e5e5e5;
+    font-size: 24px;
+    padding-left: 19px;
+    margin-top: 25px;
+    font-weight: 900;
+}
+
+input#password {
+    height: 50px;
+    width: 291px;
+    border-radius: 22px;
+    border-color: transparent;
+    background-color: #e5e5e5;
+    font-size: 24px;
+    padding-left: 19px;
+    margin-top: 25px;
+    font-weight: 900;
+}
+
+input#signup {
+    background-color: #c900ff;
+    border-color: transparent;
+    width: 296px;
+    height: 50px;
+    font-weight: 600;
+    font-size: 17px;
+    font-family: Century Gothic;
+    cursor: pointer;
+    outline: none;
+    color: #fff;
+    margin-top: 23px;
+    border-radius: 22px;
+    margin-left: 1px;
+}

@@ -1,0 +1,147 @@
+body{
+    background-color: #440117;
+}
+
+.cover {
+    background: #440117;
+    height:  270px;
+    border-bottom-left-radius:  31px;
+    border-bottom-right-radius: 31px;
+}
+
+.nav {
+    margin-top: 0!important;
+    background: rgba(21, 24, 14, 0.473)!important;
+}
+
+.cnt {
+    margin-top: 0!important;
+}
+
+
+button#Advertise {
+    background:  #d7ee08;
+}
+
+.part {
+    position:  absolute;
+    margin-top: 95px;
+    left: 40%;
+    margin-left:  -100px;
+    color: #d7ee08;
+}
+
+.red {
+    background: #b0e421;
+    margin-left: -151px;
+    padding: 12px;
+    border-radius: 12px;
+    margin-top:  27px;
+    height:  44px;
+    width: 493px;
+}
+
+input#_xrge {
+    position:  absolute;
+    width: 128px;
+    text-align: center;
+}
+
+.rgnd {
+    position: absolute;
+    margin-left:  156px;
+    font-size:  110px;
+    margin-top:  -60px;
+}
+
+input#_yrge {
+    position: absolute;
+    margin-left: 210px;
+    width: 128px;
+    text-align:  center;
+}
+
+button#_gorge {
+    position: absolute;
+    margin-left: 360px;
+    width:  128px;
+}
+._hmdsd{
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+
+    
+}
+
+._hmdsd {
+    background: transparent;
+    width: 1298px;
+    margin-left: 25px;
+    margin-top:  15px;
+    padding:  15px;
+}
+
+._adt {
+    background-color: rgba(36, 238, 238, 0.527);
+    width: 250px;
+    height: 299px;
+    border-radius: 7px;
+}
+
+div#admaker {
+    background: #240101;
+    color: #d7ee08;
+    width: fit-content;
+    padding: 5px;
+    border-radius: 5px;
+    font-weight: 900;
+    font-size: 13px;
+    cursor: pointer;
+    padding-left: 14px;
+    padding-right: 13px;
+    margin-top: 10px;
+    position:  absolute;
+    margin-left: 190px;
+}
+
+
+.adbdy {
+    margin-top: 40px;
+    position:  absolute;
+}
+
+div#tpy {
+    font-size:  75px;
+    margin-left:  13px;
+}
+
+div#mdma {
+    background: #240101;
+    color: #d7ee08;
+    width: fit-content;
+    padding: 5px;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 13px;
+    cursor: pointer;
+    padding-left: 14px;
+    padding-right: 13px;
+    margin-left:  69px;
+}
+
+div#adpr {
+    font-size: 25px;
+    margin-top:  24px;
+    font-weight:  900;
+    text-align:  center;
+}
+
+button#bynow {
+    margin-top: 246px;
+    width: 228px;
+    margin-left: 18px;
+}
+
+.bado {
+    margin-top: 19px;
+}
