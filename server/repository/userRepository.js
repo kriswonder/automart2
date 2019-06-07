@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import bcrypt from 'bcrypt';
+import bcrypt from './node_modules/bcrypt';
 
 const users = new Map();
 
