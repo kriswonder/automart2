@@ -34,4 +34,39 @@ export default class UserController {
       next(error);
     }
   }
+
+
+  static signIn(req, res, next) {
+    try {
+      const errors = authHelpers.validatePropsSignIn(req.body);
+      if (errors.length > 0) {
+        throw new ApiError(400, 'Bad Request', errors);
+      } else {
+        // eslint-disable-next-line consistent-return
+        userRepository.authenticate(req.body.email, req.body.password, (error, user) => {
+          try {
+            if (error || !user) {
+              throw new ApiError(401, 'Unauthorized', ['Wrong password or email']);
+            }
+            const token = jwt.sign({ id: user.id }, 'Gods People', { expiresIn: '24h' });
+            res.status(200).json({
+              status: 200,
+              message: `Welcome ${user.firstName} ${user.lastName}`,
+              data: {
+                token,
+                id: user.id, // user id
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+              },
+            });
+          } catch (err) {
+            next(err);
+          }
+        });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
 }
