@@ -2,6 +2,7 @@ import express from 'express';
 import logger from 'morgan';
 // import bodyParser from 'body-parser';
 import router from './routes/index';
+import carRoutes from './routes/carRoutes';
 
 const app = express();
 
@@ -14,7 +15,7 @@ app.use(express.urlencoded({
 }));
 
 app.use('/api/v1/auth', router);
-
+app.use('/api/v1/car', carRoutes);
 
 app.use('*', (req, res) => {
   res.status(400).json({
