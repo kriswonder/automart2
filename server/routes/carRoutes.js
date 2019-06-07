@@ -11,3 +11,4 @@ const router = express.Router();
 router.post('/', [multipartMiddleware, carMiddleWare.canWrite], carController.createCar);
 
 router.get('/', carMiddleWare.hasToken, carController.getCars);
+
