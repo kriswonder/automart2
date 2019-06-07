@@ -8,6 +8,32 @@ export default class UserRepository {
     return bcrypt.hashSync(password, 10);
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  static findByEmail(email) {
+    let user = {};
+    // eslint-disable-next-line no-unused-vars
+    users.forEach((value) => {
+      if (value.email.toLowerCase() === email.toLowerCase()) {
+        user = value;
+      }
+    });
+    return user;
+  }
+
+  // eslint-disable-next-line consistent-return
+  static authenticate(email, password, callback) {
+    const user = this.findByEmail(email);
+    // console.log(user);
+    if (!user) {
+      return callback(new Error('user not found'));
+    }
+    bcrypt.compare(password, user.password, (error, result) => {
+      if (result === true) {
+        return callback(null, user);
+      }
+      return callback();
+    });
+  }
 
   static save(user, hashPassWord) {
     user.password = hashPassWord;
@@ -17,4 +43,6 @@ export default class UserRepository {
     users.set(user.id, user);
     return user;
   }
+
+  static findById(id) { return users.get(id); }
 }
