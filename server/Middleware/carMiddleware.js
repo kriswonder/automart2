@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import ApiError from '../error/ApiError';
+import carRepository from '../repository/carRepository';
 
 
 dotenv.config();

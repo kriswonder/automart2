@@ -54,10 +54,10 @@ export default class CarController {
 
   static getCars(req, res) {
     let cars = [];
-    if (req.decoded.id) {
+    if (req.decoded) {
       const userId = JSON.parse(req.decoded.id);
       const user = userRepository.findById(userId);
-      if (user.is_admin === true) {
+      if (user.isAdmin === true) {
         cars = carRepository.findAll();
       }
     } else {
@@ -118,6 +118,51 @@ export default class CarController {
       }
     } else {
       next(new ApiError(400, 'Bad Request', ['No status provided']));
+    }
+  }
+
+  static updateCarPrice(req, res, next) {
+    if (req.body.price) {
+      console.log(typeof (Number(req.body.price)));
+      if (typeof (Number(req.body.price)) === 'number' || req.body.price !== '') {
+        const updatedCar = carRepository.update(req.params.id, null, req.body.price);
+        res.json({
+          status: 200,
+          data: {
+            id: updatedCar.id,
+            email: updatedCar.email,
+            createdOn: updatedCar.createdOn,
+            manufacturer: updatedCar.manufacturer,
+            model: updatedCar.model,
+            price: updatedCar.price,
+            state: updatedCar.state,
+            status: updatedCar.status,
+          },
+        });
+      } else {
+        next(new ApiError(400, 'Bad Request', ['Invalid price']));
+      }
+    } else {
+      next(new ApiError(400, 'Bad Request', ['No price provided']));
+    }
+  }
+
+  static getCar(req, res, next) {
+    const car = carRepository.findById(Number(req.params.id));
+    if (car) {
+      res.json({
+        id: car.id,
+        owner: car.owner,
+        created_on: car.created_on,
+        state: car.state,
+        status: car.status,
+        price: car.price,
+        manufacturer: car.manufacturer,
+        model: car.model,
+        bodyType: car.bodyType,
+      });
+    } else {
+      next(new ApiError(400, 'Not Found', ['The car is not in our database']));
     }
   }
 }

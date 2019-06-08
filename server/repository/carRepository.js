@@ -21,4 +21,41 @@ export default class CarRepository {
     cars.set(car.id, car);
     return cars.get(car.id);
   }
+
+  static findAll() {
+    const allCars = [];
+    // eslint-disable-next-line no-unused-vars
+    cars.forEach((value, key) => {
+      allCars.push(value);
+    });
+    return allCars;
+  }
+
+  static findAllUnsold() {
+    const allUnsoldCars = [];
+    // eslint-disable-next-line no-unused-vars
+    cars.forEach((value, key) => {
+      if (value.status === 'unsold') {
+        allUnsoldCars.push(value);
+      }
+    });
+    return allUnsoldCars;
+  }
+
+
+  static findById(id) {
+    return cars.get(id);
+  }
+
+  static update(carId, status, price) {
+    const car = cars.get(Number(carId));
+    if (price === null) {
+      car.status = status;
+    } else if (status === null) {
+      car.price = price;
+    }
+    car.updatedOn = Date.now();
+    cars.set(car.id, car);
+    return car;
+  }
 }
