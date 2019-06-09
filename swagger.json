@@ -1,0 +1,188 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "AutoMart",
+      "description": "TODO: Add Description",
+      "contact": {},
+      "version": "1.0"
+    },
+    "servers": [
+      {
+        "url": "https://automart2.herokuapp.com/api/v1/auth",
+        "variables": {}
+      }
+    ],
+    "paths": {
+      "/signin": {
+        "post": {
+          "tags": [
+            "authentication"
+          ],
+          "summary": "https://automart2.herokuapp.com/api/v1/auth/signin",
+          "description": "TODO: Add Description",
+          "operationId": "Https://automart2.herokuapp.com/api/v1/auth/signin",
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "description": "",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                "type": "string",
+                "example": "application/json"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/https%3A~1~1automart2.herokuapp.com~1api~1v1~1auth~1signinrequest"
+                },
+                "example": {
+                  "password": "zagadat",
+                  "email": "okeke@gmail.com"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "",
+              "headers": {}
+            }
+          },
+          "deprecated": false
+        }
+      },
+      "/signup": {
+        "post": {
+          "tags": [
+            "authentication"
+          ],
+          "summary": "https://automart2.herokuapp.com/api/v1/auth/signup",
+          "description": "TODO: Add Description",
+          "operationId": "Https://automart2.herokuapp.com/api/v1/auth/signup",
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "description": "",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                "type": "string",
+                "example": "application/json"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/https%3A~1~1automart2.herokuapp.com~1api~1v1~1auth~1signuprequest"
+                },
+                "example": {
+                  "firstName": "chris",
+                  "lastName": "okeke",
+                  "address": "lagos",
+                  "password": "zagadat",
+                  "confirmPassword": "zagadat",
+                  "phone": "097886868",
+                  "email": "okeke@gmail.com"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "",
+              "headers": {}
+            }
+          },
+          "deprecated": false
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "https://automart2.herokuapp.com/api/v1/auth/signinrequest": {
+          "title": "https://automart2.herokuapp.com/api/v1/auth/signinrequest",
+          "required": [
+            "password",
+            "email"
+          ],
+          "type": "object",
+          "properties": {
+            "password": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            }
+          },
+          "example": {
+            "password": "zagadat",
+            "email": "okeke@gmail.com"
+          }
+        },
+        "https://automart2.herokuapp.com/api/v1/auth/signuprequest": {
+          "title": "https://automart2.herokuapp.com/api/v1/auth/signuprequest",
+          "required": [
+            "firstName",
+            "lastName",
+            "address",
+            "password",
+            "confirmPassword",
+            "phone",
+            "email"
+          ],
+          "type": "object",
+          "properties": {
+            "firstName": {
+              "type": "string"
+            },
+            "lastName": {
+              "type": "string"
+            },
+            "address": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            },
+            "confirmPassword": {
+              "type": "string"
+            },
+            "phone": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            }
+          },
+          "example": {
+            "firstName": "chris",
+            "lastName": "okeke",
+            "address": "lagos",
+            "password": "zagadat",
+            "confirmPassword": "zagadat",
+            "phone": "097886868",
+            "email": "okeke@gmail.com"
+          }
+        }
+      }
+    },
+    "tags": [
+      {
+        "name": "authentication"
+      }
+    ]
+  }

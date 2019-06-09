@@ -1,8 +1,10 @@
 import express from 'express';
 import logger from 'morgan';
+import swaggerUI from 'swagger-ui-express';
 // import bodyParser from 'body-parser';
 import router from './routes/index';
 import carRoutes from './routes/carRoutes';
+import docs from '../swagger.json';
 
 const app = express();
 
@@ -16,6 +18,7 @@ app.use(express.urlencoded({
 
 app.use('/api/v1/auth', router);
 app.use('/api/v1/car', carRoutes);
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(docs));
 
 app.use('*', (req, res) => {
   res.status(400).json({
@@ -25,7 +28,7 @@ app.use('*', (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  console.log('CALLED JOB');
+  console.log('Nice!!');
   res.json({
     status: err.status || 500,
     message: err.message,
