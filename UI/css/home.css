@@ -12,6 +12,7 @@ body{
 .nav {
     margin-top: 0!important;
     background: rgba(21, 24, 14, 0.473)!important;
+   
 }
 
 .cnt {
@@ -69,6 +70,7 @@ button#_gorge {
 ._hmdsd{
     display: grid;
     grid-template-columns: auto auto auto auto;
+    padding-top: 50px;
 
     
 }
@@ -77,7 +79,7 @@ button#_gorge {
     background: transparent;
     width: 1298px;
     margin-left: 25px;
-    margin-top:  15px;
+    margin-top:  55px;
     padding:  15px;
 }
 
