@@ -7,7 +7,10 @@
     "start:dev": "nodemon --exec babel-node server/app",
     "test": "nyc --require @babel/register --reporter=lcov --reporter=text mocha --exit --timeout 90000 --recursive",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "coveralls": "nyc --reporter=lcov --reporter=text-lcov npm test"
+    "coveralls": "nyc --reporter=lcov --reporter=text-lcov npm test",
+    "build": "babel server -d lib",
+    "start": "node lib/app.js",
+    "heroku-build": "npm run build "
   },
   "repository": {
     "type": "git",
