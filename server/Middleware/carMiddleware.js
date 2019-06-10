@@ -71,4 +71,23 @@ export default class CarMiddleware {
       next(error);
     }
   }
+
+
+  static canDelete(req, res, next) {
+    const userId = JSON.parse(req.decoded.id);
+    // eslint-disable-next-line no-undef
+    const user = userRepository.findById(Number(req.params.id));
+    const car = carRepository.findById(Number(req.params.id));
+    if (car !== undefined) {
+      try {
+        if (userId === car.owner || user.isAdmin === true) {
+          next();
+        } else {
+          throw new ApiError(401, 'Unauthorizied', ['You do not have permission to perform this action']);
+        }
+      } catch (error) {
+        next(error);
+      }
+    }
+  }
 }

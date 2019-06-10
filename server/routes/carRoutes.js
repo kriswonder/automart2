@@ -18,4 +18,9 @@ router.patch('/:id/price', [carMiddleWare.canWrite, carMiddleWare.isOwner], carC
 
 router.get('/:id', carMiddleWare.canWrite, carController.getCar);
 
+router.delete('/:id', [carMiddleWare.canWrite, carMiddleWare.canDelete], carController.deleteCar);
+
+router.post('/:id/flag', carMiddleWare.canWrite, carController.flag);
+
+
 export default router;

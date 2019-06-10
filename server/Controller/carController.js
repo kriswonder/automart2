@@ -59,34 +59,27 @@ export default class CarController {
       const user = userRepository.findById(userId);
       if (user.isAdmin === true) {
         cars = carRepository.findAll();
+      } else {
+        cars = carRepository.findAllUnsold();
       }
     } else {
       cars = carRepository.findAllUnsold();
     }
     if (req.query.manufacturer) {
-      cars = cars.filter((car) => {
-        console.log(`${req.query.manufacturer}  ${car.manufacturer}`);
-        return req.query.manufacturer.toLowerCase() === car.manufacturer.toLowerCase();
-      });
+      // eslint-disable-next-line max-len
+      cars = cars.filter(car => req.query.manufacturer.toLowerCase() === car.manufacturer.toLowerCase());
     }
     if (req.query.state) {
-      cars = cars.filter((car) => {
-        console.log(`${req.query.state.toLowerCase()}  ${car.state.toLowerCase()}`);
-        return req.query.state.toLowerCase() === car.state.toLowerCase();
-      });
+      cars = cars.filter(car => req.query.state.toLowerCase() === car.state.toLowerCase());
     }
     if (req.query.bodyType) {
-      cars = cars.filter((car) => {
-        console.log(`${req.query.bodyType.toLowerCase()}  ${car.bodyType.toLowerCase()}`);
-        return req.query.bodyType.toLowerCase() === car.bodyType.toLowerCase();
-      });
+      cars = cars.filter(car => req.query.bodyType.toLowerCase() === car.bodyType.toLowerCase());
     }
-    if (req.query.minPrice && req.query.maxPrice) {
-      cars = cars.filter((car) => {
-        console.log(`${req.query.min_price}  ${req.query.max_price}`);
-        // eslint-disable-next-line max-len
-        return (Number(car.price) >= Number(req.query.min_price)) && (Number(car.price) <= Number(req.query.max_price));
-      });
+    if (req.query.minPrice) {
+      cars = cars.filter(car => (Number(car.price) >= Number(req.query.minPrice)));
+    }
+    if (req.query.maxPrice) {
+      cars = cars.filter(car => (Number(car.price) <= Number(req.query.maxPrice)));
     }
     res.json({
       status: 200,
@@ -94,7 +87,6 @@ export default class CarController {
       data: cars,
     });
   }
-
 
   static updateCarStatus(req, res, next) {
     if (req.body.status) {
@@ -163,6 +155,42 @@ export default class CarController {
       });
     } else {
       next(new ApiError(400, 'Not Found', ['The car is not in our database']));
+    }
+  }
+
+
+  static deleteCar(req, res, next) {
+    const deletedCar = carRepository.delete(Number(req.params.id));
+    if (deletedCar === true) {
+      res.status(200).json({
+        status: 200,
+        message: 'Request Successful',
+        data: 'Car Ad successfully deleted',
+      });
+    } else if (deletedCar === null) {
+      next(new ApiError(404, 'Not Found', ['The car is not in our database']));
+    } else {
+      next(new ApiError(403, 'Bad Request', ['Unable to delete AD']));
+    }
+  }
+
+  static flag(req, res, next) {
+    if (req.body.reason) {
+      const user = userRepository.findById(Number(req.decoded.id));
+      const car = carRepository.findById(Number(req.params.id));
+      const flag = carRepository.saveFlag(user.id, car.id, req.body);
+      res.status(200).json({
+        status: 200,
+        message: 'Car flaged',
+        data: {
+          id: flag.id,
+          carId: flag.carId,
+          reason: flag.reason,
+          description: flag.description,
+        },
+      });
+    } else {
+      next(new ApiError(400, 'Bad Request', ['Request not success']));
     }
   }
 }
