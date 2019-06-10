@@ -4,6 +4,7 @@ import swaggerUI from 'swagger-ui-express';
 // import bodyParser from 'body-parser';
 import router from './routes/index';
 import carRoutes from './routes/carRoutes';
+import orderRoutes from './routes/orderRoutes';
 import docs from '../swagger.json';
 
 const app = express();
@@ -18,6 +19,7 @@ app.use(express.urlencoded({
 
 app.use('/api/v1/auth', router);
 app.use('/api/v1/car', carRoutes);
+app.use('/api/v1/order', orderRoutes);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(docs));
 
 app.use('*', (req, res) => {
@@ -27,6 +29,7 @@ app.use('*', (req, res) => {
   });
 });
 
+// eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   console.log('Nice!!');
   res.json({
