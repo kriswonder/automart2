@@ -1,188 +1,1860 @@
 {
-    "openapi": "3.0.0",
-    "info": {
-      "title": "AutoMart",
-      "description": "TODO: Add Description",
-      "contact": {},
-      "version": "1.0"
-    },
-    "servers": [
-      {
-        "url": "https://automart2.herokuapp.com/api/v1/auth",
-        "variables": {}
-      }
-    ],
-    "paths": {
-      "/signin": {
-        "post": {
-          "tags": [
-            "authentication"
-          ],
-          "summary": "https://automart2.herokuapp.com/api/v1/auth/signin",
-          "description": "TODO: Add Description",
-          "operationId": "Https://automart2.herokuapp.com/api/v1/auth/signin",
-          "parameters": [
-            {
-              "name": "Content-Type",
-              "in": "header",
-              "description": "",
-              "required": true,
-              "style": "simple",
-              "explode": false,
-              "schema": {
-                "type": "string",
-                "example": "application/json"
-              }
-            }
-          ],
-          "requestBody": {
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0",
+    "title": "AutoMart",
+    "description": "TODO: Add Description",
+    "contact": {}
+  },
+  "host": "automart2.herokuapp.com",
+  "basePath": "/api/v1",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/auth/signin": {
+      "post": {
+        "description": "TODO: Add Description",
+        "summary": "login",
+        "tags": [
+          "authentication"
+        ],
+        "operationId": "AuthSigninPost",
+        "deprecated": false,
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
             "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/https%3A~1~1automart2.herokuapp.com~1api~1v1~1auth~1signinrequest"
-                },
-                "example": {
-                  "password": "zagadat",
-                  "email": "okeke@gmail.com"
-                }
-              }
+            "schema": {
+              "$ref": "#/definitions/loginrequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/login"
             },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "description": "",
-              "headers": {}
-            }
-          },
-          "deprecated": false
-        }
-      },
-      "/signup": {
-        "post": {
-          "tags": [
-            "authentication"
-          ],
-          "summary": "https://automart2.herokuapp.com/api/v1/auth/signup",
-          "description": "TODO: Add Description",
-          "operationId": "Https://automart2.herokuapp.com/api/v1/auth/signup",
-          "parameters": [
-            {
-              "name": "Content-Type",
-              "in": "header",
-              "description": "",
-              "required": true,
-              "style": "simple",
-              "explode": false,
-              "schema": {
-                "type": "string",
-                "example": "application/json"
-              }
-            }
-          ],
-          "requestBody": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/https%3A~1~1automart2.herokuapp.com~1api~1v1~1auth~1signuprequest"
-                },
-                "example": {
+            "examples": {
+              "application/json; charset=utf-8": {
+                "status": 200,
+                "message": "Welcome chris okeke",
+                "data": {
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MCwiaWF0IjoxNTYwMzQwOTc2LCJleHAiOjE1NjA0MjczNzZ9.YktPN1ryqZicXckPgLh867n8gHjRmcgq8H0i3MbDad8",
+                  "id": 0,
                   "firstName": "chris",
                   "lastName": "okeke",
-                  "address": "lagos",
-                  "password": "zagadat",
-                  "confirmPassword": "zagadat",
-                  "phone": "097886868",
                   "email": "okeke@gmail.com"
                 }
               }
             },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "description": "",
-              "headers": {}
+            "headers": {
+              "Server": {
+                "type": "string",
+                "default": "Cowboy"
+              },
+              "Connection": {
+                "type": "string",
+                "default": "keep-alive"
+              },
+              "X-Powered-By": {
+                "type": "string",
+                "default": "Express"
+              },
+              "Content-Length": {
+                "type": "string",
+                "default": "275"
+              },
+              "Etag": {
+                "type": "string",
+                "default": "W/\"113-/oTrbR75BlzHhVWj6Gc3uM/qrTM\""
+              },
+              "Date": {
+                "type": "string",
+                "default": "Wed, 12 Jun 2019 12:02:56 GMT"
+              },
+              "Via": {
+                "type": "string",
+                "default": "1.1 vegur"
+              }
             }
-          },
-          "deprecated": false
+          }
         }
       }
     },
-    "components": {
-      "schemas": {
-        "https://automart2.herokuapp.com/api/v1/auth/signinrequest": {
-          "title": "https://automart2.herokuapp.com/api/v1/auth/signinrequest",
-          "required": [
-            "password",
-            "email"
-          ],
-          "type": "object",
-          "properties": {
-            "password": {
-              "type": "string"
-            },
-            "email": {
-              "type": "string"
-            }
+    "/auth/signup": {
+      "post": {
+        "description": "TODO: Add Description",
+        "summary": "signup",
+        "tags": [
+          "authentication"
+        ],
+        "operationId": "AuthSignupPost",
+        "deprecated": false,
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
           },
-          "example": {
-            "password": "zagadat",
-            "email": "okeke@gmail.com"
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/signuprequest"
+            }
           }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/signup"
+            },
+            "examples": {
+              "application/json; charset=utf-8": {
+                "status": 201,
+                "message": "chris okeke Created",
+                "data": {
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MCwiaWF0IjoxNTYwMzQwOTYxLCJleHAiOjE1NjA0MjczNjF9.xXddovoF5QklFoC5uJJXDjHobzWLeyG-Njjv8vuMCwc",
+                  "id": 0,
+                  "firstName": "chris",
+                  "lastName": "okeke",
+                  "email": "okeke@gmail.com",
+                  "address": "lagos"
+                }
+              }
+            },
+            "headers": {
+              "Server": {
+                "type": "string",
+                "default": "Cowboy"
+              },
+              "Connection": {
+                "type": "string",
+                "default": "keep-alive"
+              },
+              "X-Powered-By": {
+                "type": "string",
+                "default": "Express"
+              },
+              "Content-Length": {
+                "type": "string",
+                "default": "293"
+              },
+              "Etag": {
+                "type": "string",
+                "default": "W/\"125-/YadXB5tWpbOxlroV6LYS89u1uM\""
+              },
+              "Date": {
+                "type": "string",
+                "default": "Wed, 12 Jun 2019 12:02:41 GMT"
+              },
+              "Via": {
+                "type": "string",
+                "default": "1.1 vegur"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/car": {
+      "get": {
+        "description": "TODO: Add Description",
+        "summary": "get cars",
+        "tags": [
+          "car"
+        ],
+        "operationId": "CarGet",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      },
+      "post": {
+        "description": "TODO: Add Description",
+        "summary": "post car",
+        "tags": [
+          "car"
+        ],
+        "operationId": "CarPost",
+        "deprecated": false,
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "x-access-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "data",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "engine",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/postcar"
+            },
+            "examples": {
+              "application/json; charset=utf-8": {
+                "status": 201,
+                "message": "bmw v series Created",
+                "data": {
+                  "id": 0,
+                  "email": "okeke@gmail.com",
+                  "manufacturer": "bmw",
+                  "model": "v series",
+                  "price": "23.56",
+                  "state": "new",
+                  "status": "unsold",
+                  "bodyType": "car",
+                  "engineImg": "https://res.cloudinary.com/kriswonder/image/upload/v1560341427/engine/3rN4eQQkGX4n0grjUpWHXylv.jpg"
+                }
+              }
+            },
+            "headers": {
+              "Server": {
+                "type": "string",
+                "default": "Cowboy"
+              },
+              "Connection": {
+                "type": "string",
+                "default": "keep-alive"
+              },
+              "X-Powered-By": {
+                "type": "string",
+                "default": "Express"
+              },
+              "Content-Length": {
+                "type": "string",
+                "default": "307"
+              },
+              "Etag": {
+                "type": "string",
+                "default": "W/\"133-CU9swFI4VxgZQSuQKeylvVNbmwo\""
+              },
+              "Date": {
+                "type": "string",
+                "default": "Wed, 12 Jun 2019 12:10:27 GMT"
+              },
+              "Via": {
+                "type": "string",
+                "default": "1.1 vegur"
+              }
+            }
+          }
+        }
+      }
+    },
+    "//": {
+      "get": {
+        "description": "TODO: Add Description",
+        "summary": "patch status",
+        "tags": [
+          "car"
+        ],
+        "operationId": "UnnammedEndpointGet",
+        "deprecated": false,
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/patchstatus"
+            },
+            "examples": {
+              "application/json; charset=utf-8": {
+                "status": 200,
+                "data": {
+                  "id": 0,
+                  "createdOn": 1560341427455,
+                  "manufacturer": "bmw",
+                  "model": "v series",
+                  "price": "23.56",
+                  "state": "new",
+                  "status": "unsold"
+                }
+              }
+            },
+            "headers": {
+              "Server": {
+                "type": "string",
+                "default": "Cowboy"
+              },
+              "Connection": {
+                "type": "string",
+                "default": "keep-alive"
+              },
+              "X-Powered-By": {
+                "type": "string",
+                "default": "Express"
+              },
+              "Content-Length": {
+                "type": "string",
+                "default": "144"
+              },
+              "Etag": {
+                "type": "string",
+                "default": "W/\"90-pX/hKq+Lu1p5VJUgdahUy1lsnO4\""
+              },
+              "Date": {
+                "type": "string",
+                "default": "Wed, 12 Jun 2019 12:12:15 GMT"
+              },
+              "Via": {
+                "type": "string",
+                "default": "1.1 vegur"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/car/0/": {
+      "get": {
+        "description": "TODO: Add Description",
+        "summary": "patch price",
+        "tags": [
+          "car"
+        ],
+        "operationId": "Car0Get",
+        "deprecated": false,
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "x-access-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/patchprice"
+            },
+            "examples": {
+              "application/json; charset=utf-8": {
+                "id": 0,
+                "owner": 0,
+                "state": "new",
+                "status": "unsold",
+                "price": "23.56",
+                "manufacturer": "bmw",
+                "model": "v series",
+                "bodyType": "car"
+              }
+            },
+            "headers": {
+              "Server": {
+                "type": "string",
+                "default": "Cowboy"
+              },
+              "Connection": {
+                "type": "string",
+                "default": "keep-alive"
+              },
+              "X-Powered-By": {
+                "type": "string",
+                "default": "Express"
+              },
+              "Content-Length": {
+                "type": "string",
+                "default": "123"
+              },
+              "Etag": {
+                "type": "string",
+                "default": "W/\"7b-S3pjjbfAAyShPZElWyd7SpyYivI\""
+              },
+              "Date": {
+                "type": "string",
+                "default": "Wed, 12 Jun 2019 12:13:43 GMT"
+              },
+              "Via": {
+                "type": "string",
+                "default": "1.1 vegur"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "TODO: Add Description",
+        "summary": "Delete a specific car Ad.",
+        "tags": [
+          "car"
+        ],
+        "operationId": "Car0Delete",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "x-access-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/DeleteaspecificcarAd.Request"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/car/0/flag/": {
+      "post": {
+        "description": "TODO: Add Description",
+        "summary": "flag/report a posted AD as fraudulent.",
+        "tags": [
+          "car"
+        ],
+        "operationId": "Car0FlagPost",
+        "deprecated": false,
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "x-access-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/flag~1reportapostedADasfraudulent.Request"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/flag~1reportapostedad"
+            },
+            "examples": {
+              "application/json; charset=utf-8": {
+                "status": 200,
+                "message": "Car flaged",
+                "data": {
+                  "id": 0,
+                  "carId": 0,
+                  "reason": "fufugugugug"
+                }
+              }
+            },
+            "headers": {
+              "Server": {
+                "type": "string",
+                "default": "Cowboy"
+              },
+              "Connection": {
+                "type": "string",
+                "default": "keep-alive"
+              },
+              "X-Powered-By": {
+                "type": "string",
+                "default": "Express"
+              },
+              "Content-Length": {
+                "type": "string",
+                "default": "86"
+              },
+              "Etag": {
+                "type": "string",
+                "default": "W/\"56-vyRgN4YQK9ClhpKjB/p6TeA0Y5E\""
+              },
+              "Date": {
+                "type": "string",
+                "default": "Wed, 12 Jun 2019 12:20:00 GMT"
+              },
+              "Via": {
+                "type": "string",
+                "default": "1.1 vegur"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/order": {
+      "post": {
+        "description": "TODO: Add Description",
+        "summary": "Create a purchase order.",
+        "tags": [
+          "order"
+        ],
+        "operationId": "OrderPost",
+        "deprecated": false,
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "x-access-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Createapurchaseorder.Request"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Createapurchaseorder"
+            },
+            "examples": {
+              "application/json; charset=utf-8": {
+                "status": 200,
+                "data": {
+                  "id": 0,
+                  "carId": "0",
+                  "createdOn": 1560342296095,
+                  "status": "pending",
+                  "sellersPrice": "23.56",
+                  "offeredPrice": "4000"
+                }
+              }
+            },
+            "headers": {
+              "Server": {
+                "type": "string",
+                "default": "Cowboy"
+              },
+              "Connection": {
+                "type": "string",
+                "default": "keep-alive"
+              },
+              "X-Powered-By": {
+                "type": "string",
+                "default": "Express"
+              },
+              "Content-Length": {
+                "type": "string",
+                "default": "132"
+              },
+              "Etag": {
+                "type": "string",
+                "default": "W/\"84-eiQ+Oe2AJ2X3/4Pv9HXKa22XClM\""
+              },
+              "Date": {
+                "type": "string",
+                "default": "Wed, 12 Jun 2019 12:24:56 GMT"
+              },
+              "Via": {
+                "type": "string",
+                "default": "1.1 vegur"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/order/0/price": {
+      "patch": {
+        "description": "TODO: Add Description",
+        "summary": "Update the price of a purchase order. A user can only update the price of his/her purchase order while the order’s status still reads pending.",
+        "tags": [
+          "order"
+        ],
+        "operationId": "Order0PricePatch",
+        "deprecated": false,
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "x-access-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Updatethepriceofapurchaseorder.Ausercanonlyupdatethepriceofhis~1herpurchaseorderwhiletheorder%E2%80%99sstatusstillreadspending.Request"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/updatepriceofapurchaseorder"
+            },
+            "examples": {
+              "application/json; charset=utf-8": {
+                "status": 200,
+                "data": {
+                  "id": 0,
+                  "carId": "0",
+                  "status": "pending",
+                  "oldOfferedPrice": "4000",
+                  "newOfferedPrice": "3000"
+                }
+              }
+            },
+            "headers": {
+              "Server": {
+                "type": "string",
+                "default": "Cowboy"
+              },
+              "Connection": {
+                "type": "string",
+                "default": "keep-alive"
+              },
+              "X-Powered-By": {
+                "type": "string",
+                "default": "Express"
+              },
+              "Content-Length": {
+                "type": "string",
+                "default": "111"
+              },
+              "Etag": {
+                "type": "string",
+                "default": "W/\"6f-72I1j/wPNHnm3BPOfNnWAIdc8xI\""
+              },
+              "Date": {
+                "type": "string",
+                "default": "Wed, 12 Jun 2019 12:25:34 GMT"
+              },
+              "Via": {
+                "type": "string",
+                "default": "1.1 vegur"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "loginrequest": {
+      "title": "loginrequest",
+      "example": {
+        "password": "zagadat",
+        "email": "okeke@gmail.com"
+      },
+      "type": "object",
+      "properties": {
+        "password": {
+          "type": "string"
         },
-        "https://automart2.herokuapp.com/api/v1/auth/signuprequest": {
-          "title": "https://automart2.herokuapp.com/api/v1/auth/signuprequest",
-          "required": [
-            "firstName",
-            "lastName",
-            "address",
-            "password",
-            "confirmPassword",
-            "phone",
-            "email"
-          ],
-          "type": "object",
-          "properties": {
-            "firstName": {
-              "type": "string"
-            },
-            "lastName": {
-              "type": "string"
-            },
-            "address": {
-              "type": "string"
-            },
-            "password": {
-              "type": "string"
-            },
-            "confirmPassword": {
-              "type": "string"
-            },
-            "phone": {
-              "type": "string"
-            },
-            "email": {
-              "type": "string"
-            }
-          },
-          "example": {
-            "firstName": "chris",
-            "lastName": "okeke",
-            "address": "lagos",
-            "password": "zagadat",
-            "confirmPassword": "zagadat",
-            "phone": "097886868",
-            "email": "okeke@gmail.com"
+        "email": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "password",
+        "email"
+      ]
+    },
+    "login": {
+      "title": "login",
+      "example": {
+        "status": 200,
+        "message": "Welcome chris okeke",
+        "data": {
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MCwiaWF0IjoxNTYwMzQwOTc2LCJleHAiOjE1NjA0MjczNzZ9.YktPN1ryqZicXckPgLh867n8gHjRmcgq8H0i3MbDad8",
+          "id": 0,
+          "firstName": "chris",
+          "lastName": "okeke",
+          "email": "okeke@gmail.com"
+        }
+      },
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "#/definitions/Data"
+        }
+      },
+      "required": [
+        "status",
+        "message",
+        "data"
+      ]
+    },
+    "Data": {
+      "title": "Data",
+      "example": {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MCwiaWF0IjoxNTYwMzQwOTc2LCJleHAiOjE1NjA0MjczNzZ9.YktPN1ryqZicXckPgLh867n8gHjRmcgq8H0i3MbDad8",
+        "id": 0,
+        "firstName": "chris",
+        "lastName": "okeke",
+        "email": "okeke@gmail.com"
+      },
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "token",
+        "id",
+        "firstName",
+        "lastName",
+        "email"
+      ]
+    },
+    "signuprequest": {
+      "title": "signuprequest",
+      "example": {
+        "firstName": "chris",
+        "lastName": "okeke",
+        "address": "lagos",
+        "password": "zagadat",
+        "confirmPassword": "zagadat",
+        "phone": "097886868",
+        "email": "okeke@gmail.com"
+      },
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "confirmPassword": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "firstName",
+        "lastName",
+        "address",
+        "password",
+        "confirmPassword",
+        "phone",
+        "email"
+      ]
+    },
+    "signup": {
+      "title": "signup",
+      "example": {
+        "status": 201,
+        "message": "chris okeke Created",
+        "data": {
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MCwiaWF0IjoxNTYwMzQwOTYxLCJleHAiOjE1NjA0MjczNjF9.xXddovoF5QklFoC5uJJXDjHobzWLeyG-Njjv8vuMCwc",
+          "id": 0,
+          "firstName": "chris",
+          "lastName": "okeke",
+          "email": "okeke@gmail.com",
+          "address": "lagos"
+        }
+      },
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "#/definitions/Data1"
+        }
+      },
+      "required": [
+        "status",
+        "message",
+        "data"
+      ]
+    },
+    "Data1": {
+      "title": "Data1",
+      "example": {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MCwiaWF0IjoxNTYwMzQwOTYxLCJleHAiOjE1NjA0MjczNjF9.xXddovoF5QklFoC5uJJXDjHobzWLeyG-Njjv8vuMCwc",
+        "id": 0,
+        "firstName": "chris",
+        "lastName": "okeke",
+        "email": "okeke@gmail.com",
+        "address": "lagos"
+      },
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "token",
+        "id",
+        "firstName",
+        "lastName",
+        "email",
+        "address"
+      ]
+    },
+    "data2": {
+      "title": "data2",
+      "example": {
+        "state": "new",
+        "price": "23.56",
+        "manufacturer": "bmw",
+        "model": "v series",
+        "bodyType": "car"
+      },
+      "type": "object",
+      "properties": {
+        "state": {
+          "type": "string"
+        },
+        "price": {
+          "type": "string"
+        },
+        "manufacturer": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "bodyType": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "state",
+        "price",
+        "manufacturer",
+        "model",
+        "bodyType"
+      ]
+    },
+    "postcar": {
+      "title": "postcar",
+      "example": {
+        "status": 201,
+        "message": "bmw v series Created",
+        "data": {
+          "id": 0,
+          "email": "okeke@gmail.com",
+          "manufacturer": "bmw",
+          "model": "v series",
+          "price": "23.56",
+          "state": "new",
+          "status": "unsold",
+          "bodyType": "car",
+          "engineImg": "https://res.cloudinary.com/kriswonder/image/upload/v1560341427/engine/3rN4eQQkGX4n0grjUpWHXylv.jpg"
+        }
+      },
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "#/definitions/Data3"
+        }
+      },
+      "required": [
+        "status",
+        "message",
+        "data"
+      ]
+    },
+    "Data3": {
+      "title": "Data3",
+      "example": {
+        "id": 0,
+        "email": "okeke@gmail.com",
+        "manufacturer": "bmw",
+        "model": "v series",
+        "price": "23.56",
+        "state": "new",
+        "status": "unsold",
+        "bodyType": "car",
+        "engineImg": "https://res.cloudinary.com/kriswonder/image/upload/v1560341427/engine/3rN4eQQkGX4n0grjUpWHXylv.jpg"
+      },
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "email": {
+          "type": "string"
+        },
+        "manufacturer": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "price": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "bodyType": {
+          "type": "string"
+        },
+        "engineImg": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "email",
+        "manufacturer",
+        "model",
+        "price",
+        "state",
+        "status",
+        "bodyType",
+        "engineImg"
+      ]
+    },
+    "patchstatus": {
+      "title": "patchstatus",
+      "example": {
+        "status": 200,
+        "data": {
+          "id": 0,
+          "createdOn": 1560341427455,
+          "manufacturer": "bmw",
+          "model": "v series",
+          "price": "23.56",
+          "state": "new",
+          "status": "unsold"
+        }
+      },
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "data": {
+          "$ref": "#/definitions/Data4"
+        }
+      },
+      "required": [
+        "status",
+        "data"
+      ]
+    },
+    "Data4": {
+      "title": "Data4",
+      "example": {
+        "id": 0,
+        "createdOn": 1560341427455,
+        "manufacturer": "bmw",
+        "model": "v series",
+        "price": "23.56",
+        "state": "new",
+        "status": "unsold"
+      },
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdOn": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "manufacturer": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "price": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "createdOn",
+        "manufacturer",
+        "model",
+        "price",
+        "state",
+        "status"
+      ]
+    },
+    "patchprice": {
+      "title": "patchprice",
+      "example": {
+        "id": 0,
+        "owner": 0,
+        "state": "new",
+        "status": "unsold",
+        "price": "23.56",
+        "manufacturer": "bmw",
+        "model": "v series",
+        "bodyType": "car"
+      },
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "owner": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "state": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "price": {
+          "type": "string"
+        },
+        "manufacturer": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "bodyType": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "owner",
+        "state",
+        "status",
+        "price",
+        "manufacturer",
+        "model",
+        "bodyType"
+      ]
+    },
+    "viewspecificcar": {
+      "title": "viewspecificcar",
+      "example": {
+        "id": 0,
+        "owner": 0,
+        "state": "new",
+        "status": "unsold",
+        "price": "23.56",
+        "manufacturer": "bmw",
+        "model": "v series",
+        "bodyType": "car"
+      },
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "owner": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "state": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "price": {
+          "type": "string"
+        },
+        "manufacturer": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "bodyType": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "owner",
+        "state",
+        "status",
+        "price",
+        "manufacturer",
+        "model",
+        "bodyType"
+      ]
+    },
+    "Viewallunsoldcars.": {
+      "title": "Viewallunsoldcars.",
+      "example": {
+        "status": 200,
+        "message": "success",
+        "data": [
+          {
+            "state": "new",
+            "price": "23.56",
+            "manufacturer": "bmw",
+            "model": "v series",
+            "bodyType": "car",
+            "id": 0,
+            "status": "unsold",
+            "owner": 0,
+            "ownerEmail": "okeke@gmail.com",
+            "createdOn": 1560341427455,
+            "engineImg": "https://res.cloudinary.com/kriswonder/image/upload/v1560341427/engine/3rN4eQQkGX4n0grjUpWHXylv.jpg",
+            "updatedOn": 1560341535808
+          }
+        ]
+      },
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Data5"
           }
         }
-      }
+      },
+      "required": [
+        "status",
+        "message",
+        "data"
+      ]
     },
-    "tags": [
-      {
-        "name": "authentication"
-      }
-    ]
-  }
+    "Data5": {
+      "title": "Data5",
+      "example": {
+        "state": "new",
+        "price": "23.56",
+        "manufacturer": "bmw",
+        "model": "v series",
+        "bodyType": "car",
+        "id": 0,
+        "status": "unsold",
+        "owner": 0,
+        "ownerEmail": "okeke@gmail.com",
+        "createdOn": 1560341427455,
+        "engineImg": "https://res.cloudinary.com/kriswonder/image/upload/v1560341427/engine/3rN4eQQkGX4n0grjUpWHXylv.jpg",
+        "updatedOn": 1560341535808
+      },
+      "type": "object",
+      "properties": {
+        "state": {
+          "type": "string"
+        },
+        "price": {
+          "type": "string"
+        },
+        "manufacturer": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "bodyType": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "status": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "ownerEmail": {
+          "type": "string"
+        },
+        "createdOn": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "engineImg": {
+          "type": "string"
+        },
+        "updatedOn": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "required": [
+        "state",
+        "price",
+        "manufacturer",
+        "model",
+        "bodyType",
+        "id",
+        "status",
+        "owner",
+        "ownerEmail",
+        "createdOn",
+        "engineImg",
+        "updatedOn"
+      ]
+    },
+    "Viewallunsoldcarswithinapricerange": {
+      "title": "Viewallunsoldcarswithinapricerange",
+      "example": {
+        "status": 200,
+        "message": "success",
+        "data": [
+          {
+            "state": "new",
+            "price": "23.56",
+            "manufacturer": "bmw",
+            "model": "v series",
+            "bodyType": "car",
+            "id": 0,
+            "status": "unsold",
+            "owner": 0,
+            "ownerEmail": "okeke@gmail.com",
+            "createdOn": 1560341427455,
+            "engineImg": "https://res.cloudinary.com/kriswonder/image/upload/v1560341427/engine/3rN4eQQkGX4n0grjUpWHXylv.jpg",
+            "updatedOn": 1560341535808
+          }
+        ]
+      },
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Data5"
+          }
+        }
+      },
+      "required": [
+        "status",
+        "message",
+        "data"
+      ]
+    },
+    "DeleteaspecificcarAd.Request": {
+      "title": "DeleteaspecificcarAd.Request",
+      "example": {
+        "price": 7000
+      },
+      "type": "object",
+      "properties": {
+        "price": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "required": [
+        "price"
+      ]
+    },
+    "flag/reportapostedADasfraudulent.Request": {
+      "title": "flag/reportapostedADasfraudulent.Request",
+      "example": {
+        "reason": "fufugugugug"
+      },
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason"
+      ]
+    },
+    "flag/reportapostedad": {
+      "title": "flag/reportapostedad",
+      "example": {
+        "status": 200,
+        "message": "Car flaged",
+        "data": {
+          "id": 0,
+          "carId": 0,
+          "reason": "fufugugugug"
+        }
+      },
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "#/definitions/Data7"
+        }
+      },
+      "required": [
+        "status",
+        "message",
+        "data"
+      ]
+    },
+    "Data7": {
+      "title": "Data7",
+      "example": {
+        "id": 0,
+        "carId": 0,
+        "reason": "fufugugugug"
+      },
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "carId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "carId",
+        "reason"
+      ]
+    },
+    "Viewallunsoldcarsofaspecificstate": {
+      "title": "Viewallunsoldcarsofaspecificstate",
+      "example": {
+        "status": 200,
+        "message": "success",
+        "data": [
+          {
+            "state": "new",
+            "price": "23.56",
+            "manufacturer": "bmw",
+            "model": "v series",
+            "bodyType": "car",
+            "id": 0,
+            "status": "unsold",
+            "owner": 0,
+            "ownerEmail": "okeke@gmail.com",
+            "createdOn": 1560341427455,
+            "engineImg": "https://res.cloudinary.com/kriswonder/image/upload/v1560341427/engine/3rN4eQQkGX4n0grjUpWHXylv.jpg",
+            "updatedOn": 1560341535808
+          }
+        ]
+      },
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Data5"
+          }
+        }
+      },
+      "required": [
+        "status",
+        "message",
+        "data"
+      ]
+    },
+    "Viewallunsoldcarsofaspecificmake": {
+      "title": "Viewallunsoldcarsofaspecificmake",
+      "example": {
+        "status": 200,
+        "message": "success",
+        "data": [
+          {
+            "state": "new",
+            "price": "23.56",
+            "manufacturer": "bmw",
+            "model": "v series",
+            "bodyType": "car",
+            "id": 0,
+            "status": "unsold",
+            "owner": 0,
+            "ownerEmail": "okeke@gmail.com",
+            "createdOn": 1560341427455,
+            "engineImg": "https://res.cloudinary.com/kriswonder/image/upload/v1560341427/engine/3rN4eQQkGX4n0grjUpWHXylv.jpg",
+            "updatedOn": 1560341535808
+          }
+        ]
+      },
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Data5"
+          }
+        }
+      },
+      "required": [
+        "status",
+        "message",
+        "data"
+      ]
+    },
+    "viewallcarsofaspecificbodytype": {
+      "title": "viewallcarsofaspecificbodytype",
+      "example": {
+        "status": 200,
+        "message": "success",
+        "data": [
+          {
+            "state": "new",
+            "price": "23.56",
+            "manufacturer": "bmw",
+            "model": "v series",
+            "bodyType": "car",
+            "id": 0,
+            "status": "unsold",
+            "owner": 0,
+            "ownerEmail": "okeke@gmail.com",
+            "createdOn": 1560341427455,
+            "engineImg": "https://res.cloudinary.com/kriswonder/image/upload/v1560341427/engine/3rN4eQQkGX4n0grjUpWHXylv.jpg",
+            "updatedOn": 1560341535808
+          }
+        ]
+      },
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Data5"
+          }
+        }
+      },
+      "required": [
+        "status",
+        "message",
+        "data"
+      ]
+    },
+    "Createapurchaseorder.Request": {
+      "title": "Createapurchaseorder.Request",
+      "example": {
+        "carId": "0",
+        "offeredPrice": "4000"
+      },
+      "type": "object",
+      "properties": {
+        "carId": {
+          "type": "string"
+        },
+        "offeredPrice": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "carId",
+        "offeredPrice"
+      ]
+    },
+    "Createapurchaseorder": {
+      "title": "Createapurchaseorder",
+      "example": {
+        "status": 200,
+        "data": {
+          "id": 0,
+          "carId": "0",
+          "createdOn": 1560342296095,
+          "status": "pending",
+          "sellersPrice": "23.56",
+          "offeredPrice": "4000"
+        }
+      },
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "data": {
+          "$ref": "#/definitions/Data11"
+        }
+      },
+      "required": [
+        "status",
+        "data"
+      ]
+    },
+    "Data11": {
+      "title": "Data11",
+      "example": {
+        "id": 0,
+        "carId": "0",
+        "createdOn": 1560342296095,
+        "status": "pending",
+        "sellersPrice": "23.56",
+        "offeredPrice": "4000"
+      },
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "carId": {
+          "type": "string"
+        },
+        "createdOn": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "status": {
+          "type": "string"
+        },
+        "sellersPrice": {
+          "type": "string"
+        },
+        "offeredPrice": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "carId",
+        "createdOn",
+        "status",
+        "sellersPrice",
+        "offeredPrice"
+      ]
+    },
+    "Updatethepriceofapurchaseorder.Ausercanonlyupdatethepriceofhis/herpurchaseorderwhiletheorder’sstatusstillreadspending.Request": {
+      "title": "Updatethepriceofapurchaseorder.Ausercanonlyupdatethepriceofhis/herpurchaseorderwhiletheorder’sstatusstillreadspending.Request",
+      "example": {
+        "offeredPrice": "3000"
+      },
+      "type": "object",
+      "properties": {
+        "offeredPrice": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "offeredPrice"
+      ]
+    },
+    "updatepriceofapurchaseorder": {
+      "title": "updatepriceofapurchaseorder",
+      "example": {
+        "status": 200,
+        "data": {
+          "id": 0,
+          "carId": "0",
+          "status": "pending",
+          "oldOfferedPrice": "4000",
+          "newOfferedPrice": "3000"
+        }
+      },
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "data": {
+          "$ref": "#/definitions/Data12"
+        }
+      },
+      "required": [
+        "status",
+        "data"
+      ]
+    },
+    "Data12": {
+      "title": "Data12",
+      "example": {
+        "id": 0,
+        "carId": "0",
+        "status": "pending",
+        "oldOfferedPrice": "4000",
+        "newOfferedPrice": "3000"
+      },
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "carId": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "oldOfferedPrice": {
+          "type": "string"
+        },
+        "newOfferedPrice": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "carId",
+        "status",
+        "oldOfferedPrice",
+        "newOfferedPrice"
+      ]
+    }
+  },
+  "tags": [
+    {
+      "name": "authentication"
+    },
+    {
+      "name": "car"
+    },
+    {
+      "name": "order"
+    }
+  ]
+}
