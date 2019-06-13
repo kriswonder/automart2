@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import ApiError from '../error/ApiError';
 import carRepository from '../repository/carRepository';
+import userRepository from '../repository/userRepository';
 
 
 dotenv.config();
@@ -75,10 +76,9 @@ export default class CarMiddleware {
 
   static canDelete(req, res, next) {
     const userId = JSON.parse(req.decoded.id);
-    // eslint-disable-next-line no-undef
     const user = userRepository.findById(Number(req.params.id));
     const car = carRepository.findById(Number(req.params.id));
-    if (car !== undefined) {
+    if (car) {
       try {
         if (userId === car.owner || user.isAdmin === true) {
           next();
@@ -88,6 +88,8 @@ export default class CarMiddleware {
       } catch (error) {
         next(error);
       }
+    } else {
+      next(new ApiError(404, 'Not Found', ['The car is not in our database']));
     }
   }
 }
