@@ -24,9 +24,11 @@ Auto Mart, users can sell their cars or buy from trusted dealerships or private 
 
 ## SERVER
 
-## API documentation was done using swagger and can be accessed using this  url ``` https://automart2.herokuapp.com/api-docs ```
+## API documentation was done using swagger and can be accessed using this  url 
+[Api documentation link](https://automart2.herokuapp.com/api-docs)
 
-## Pivotal Tracker can be accessed using this this url ```  https://www.pivotaltracker.com/n/projects/2348908 ```
+## Pivotal Tracker can be accessed using this this url  
+[Pivotal Tracker link :(https://www.pivotaltracker.com/n/projects/2348908)
 ## Used Tools
 
 ### Language
@@ -92,6 +94,27 @@ It will install the node_modules which will help you run the project on your loc
 > npm test
 ```
 server runs on port 3000
+
+## _API Endpoints_
+
+| Endpoint                                                      | Functionality                          | HTTP method |
+| ------------------------------------------------------------- | :------------------------------------: | ----------: |
+| /api/v1/auth/signup                                           | Create a user account                       | POST   |
+| /api/v1/auth/login                                            | Login a user                                | POST   |
+| /api/v1/car                                                   | Create a car advertiment                    | POST   |
+| /api/v1/car/:id                                               | Get a single car by its id                  | GET    |
+| /api/v1/car                                                   | Get all cars                                | GET    |
+| /api/v1/car?status=avaliable&minPrice=100000&maxPrice=5000000 | View all car between the min and max prices | GET    |
+| /api/v1/car?status=avaliable&manufacturer=benz                | Return all coupe benz cars                  | GET    |
+| /api/v1/car?status=avaliable&bodyType=coupe                   | Return all coupe bodyType cars              | GET    |
+| /api/v1/car?status=avaliable&state=new                        | Return all new cars                         | GET    |
+| /api/v1/car/:id/status                                        | Modify status of a car(sold/unsold)         | PATCH  |           |/api/v1/car/:id/status                                         | Modify price of a car                       | PATCH  |
+| /api/v1/car/:id/flag                                          | Flag an advert as fraudulent                | POST   |
+| /api/v1/car/:id                                               | Delete an advert                            | DELETE |
+| /api/v1/order                                                 | Create an order for a car                   | POST   |
+| /api/v1/order/:id?price                                       | Modify an order for a car                   | PATCH  |
+| /api-docs                                                     | Read API documentation                      | GET    |
+
 
 ## Author
 - Okeke Christopher
