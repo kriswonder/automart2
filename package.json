@@ -10,7 +10,9 @@
     "coveralls": "nyc --reporter=lcov --reporter=text-lcov npm test",
     "build": "babel server -d lib",
     "start": "node lib/app.js",
-    "heroku-build": "npm run build "
+    "heroku-build": "npm run build ",
+    "migrate": "babel-node ./server/db/migrate",
+    "seedTable": "babel-node ./server/db/seed"
   },
   "repository": {
     "type": "git",
@@ -35,6 +37,7 @@
     "mocha": "^6.1.4",
     "morgan": "^1.9.1",
     "nyc": "^14.1.1",
+    "pg": "^7.11.0",
     "swagger-ui-express": "^4.0.6"
   },
   "engines": {

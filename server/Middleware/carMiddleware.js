@@ -15,7 +15,7 @@ export default class CarMiddleware {
       if (!token) {
         throw new ApiError(400, 'Bad Request', ['No token was provided']);
       }
-      jwt.verify(token, 'Gods People', (error, decoded) => {
+      jwt.verify(token, process.env.SECRET_KEY, (error, decoded) => {
         try {
           if (error) {
             throw new ApiError(401, 'Unauthorized', ['Failed to authenticate token']);
@@ -38,7 +38,7 @@ export default class CarMiddleware {
       if (!token) {
         next();
       }
-      jwt.verify(token, 'Gods People', (error, decoded) => {
+      jwt.verify(token, 'process.env.SECRET_KEY', (error, decoded) => {
         try {
           if (error) {
             next();

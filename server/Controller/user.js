@@ -17,7 +17,7 @@ export default class UserController {
       const hashedPassword = userRepository.hashPassWord(req.body.password);
       const user = userRepository.save(req.body, hashedPassword);
       const token = jwt.sign({ id: user.id },
-        'Gods People', { expiresIn: '24h' });
+        process.env.SECRET_KEY, { expiresIn: '24h' });
       res.status(201).json({
         status: 201,
         message: `${user.firstName} ${user.lastName} Created`,
@@ -48,7 +48,7 @@ export default class UserController {
             if (error || !user) {
               throw new ApiError(401, 'Unauthorized', ['Wrong password or email']);
             }
-            const token = jwt.sign({ id: user.id }, 'Gods People', { expiresIn: '24h' });
+            const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, { expiresIn: '24h' });
             res.status(200).json({
               status: 200,
               message: `Welcome ${user.firstName} ${user.lastName}`,

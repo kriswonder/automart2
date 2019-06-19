@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import express from 'express';
 import logger from 'morgan';
 import swaggerUI from 'swagger-ui-express';
@@ -6,9 +7,19 @@ import router from './routes/index';
 import carRoutes from './routes/carRoutes';
 import orderRoutes from './routes/orderRoutes';
 import docs from '../swagger.json';
+import 'dotenv/config';
 
-const app = express();
+// eslint-disable-next-line import/order
+import { Pool, Client } from 'pg';
 
+export const app = express();
+
+export const client = new Client({
+  connectionString: process.env.DATABASE_URL,
+});
+client.connect();
+
+console.log(process.env.DATABASE_URL);
 
 app.use(logger('dev'));
 
@@ -45,5 +56,5 @@ app.listen(/* config.port || */ port, () => {
   console.log(`server now running on ${port}`);
 });
 
-
-export default app;
+// export app;
+// export client
