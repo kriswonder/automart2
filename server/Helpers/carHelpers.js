@@ -6,7 +6,7 @@ cloudinary.v2.config({
   api_secret: 'yLlN7e4PgXCpFDNhY5T_47M1aGo',
 });
 
-export default class AuthUtil {
+export default class AuthHelpers {
   static validatePropsCreateCar(obj) {
     const props = ['price', 'state', 'manufacturer', 'model', 'bodyType'];
     const errors = [];
