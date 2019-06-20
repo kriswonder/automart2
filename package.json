@@ -2,7 +2,7 @@
   "name": "automart2",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server/app.js",
   "scripts": {
     "start:dev": "nodemon --exec babel-node server/app",
     "test": "nyc --require @babel/register --reporter=lcov --reporter=text mocha --exit --timeout 90000 --recursive",

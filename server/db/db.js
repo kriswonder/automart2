@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+// eslint-disable-next-line no-unused-vars
 import { Pool, Client } from 'pg';
 import dotenv from 'dotenv';
 
