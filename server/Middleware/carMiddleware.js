@@ -57,16 +57,11 @@ export default class CarMiddleware {
 
   static isOwner(req, res, next) {
     const userId = JSON.parse(req.decoded.id);
-    // eslint-disable-next-line no-console
-    // eslint-disable-next-line no-use-before-define
-    console.log(car);
-    // eslint-disable-next-line no-undef
     const car = carRepository.findById(Number(req.params.id));
     try {
       if (userId !== car.owner) {
         throw new ApiError(401, 'Unauthorizied', ['You do not have permission to perform this action']);
       }
-      console.log(car);
       next();
     } catch (error) {
       next(error);
