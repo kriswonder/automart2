@@ -1,11 +1,8 @@
-/* eslint-disable import/no-named-as-default-member */
 import bcrypt from 'bcrypt';
-// eslint-disable-next-line import/no-named-as-default-member
-// eslint-disable-next-line import/no-named-as-default
 import userRepository from '../repository/userRepository';
 import ApiError from '../error/ApiError';
 
-export default class AuthUtil {
+export default class AuthHelpers {
   static hashPassWord(password) {
     return bcrypt.hashSync(password, 10);
   }

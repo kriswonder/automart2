@@ -9,17 +9,7 @@ import orderRoutes from './routes/orderRoutes';
 import docs from '../swagger.json';
 import 'dotenv/config';
 
-// eslint-disable-next-line import/order
-import { Pool, Client } from 'pg';
-
-export const app = express();
-
-export const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-});
-client.connect();
-
-console.log(process.env.DATABASE_URL);
+const app = express();
 
 app.use(logger('dev'));
 
@@ -56,5 +46,4 @@ app.listen(/* config.port || */ port, () => {
   console.log(`server now running on ${port}`);
 });
 
-// export app;
-// export client
+module.exports = app;
