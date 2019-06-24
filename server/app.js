@@ -7,7 +7,7 @@ import router from './routes/index';
 import carRoutes from './routes/carRoutes';
 import orderRoutes from './routes/orderRoutes';
 import docs from '../swagger.json';
-import 'dotenv/config';
+
 
 const app = express();
 
