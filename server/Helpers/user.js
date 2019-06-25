@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import userRepository from '../repository/userRepository';
+import authRepository from '../repository/userRepository';
 import ApiError from '../error/ApiError';
 
 export default class AuthHelpers {
@@ -9,7 +9,7 @@ export default class AuthHelpers {
 
   // eslint-disable-next-line consistent-return
   static async authenticate(email, password, callback) {
-    const emailQuery = await userRepository.findByEmail(email);
+    const emailQuery = await authRepository.findByEmail(email);
     if (emailQuery.rows.length < 1) {
       return callback(new ApiError(401, 'Unauthorized', ['Wrong email provided']));
     }
@@ -54,5 +54,33 @@ export default class AuthHelpers {
     if (errors.length > 0) {
       throw new ApiError(400, 'Bad Request', errors);
     }
+  }
+
+  static validateChangePasswordToken(obj /* ,token */) {
+    const props = ['password', 'confirmPassword'];
+    const errors = [];
+    props.forEach((property) => {
+      if (obj[property] || obj[property].trim() !== '') {
+        errors.push(`${property} provided`);
+      }
+    });
+    if (errors.length > 0) {
+      return true;
+    }
+    return false;
+  }
+
+  static validateChangePassword(obj) {
+    const props = ['password', 'newPassword'];
+    const errors = [];
+    props.forEach((property) => {
+      if (obj[property] || obj[property].trim() !== '') {
+        errors.push(`${property} provided`);
+      }
+    });
+    if (errors.length > 0) {
+      return true;
+    }
+    return false;
   }
 }

@@ -2,8 +2,8 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import ApiError from '../error/ApiError';
 import carRepository from '../repository/carRepository';
-import userRepository from '../repository/userRepository';
-
+import authRepository from '../repository/userRepository';
+import { queryById } from '../db/queries/authQueries';
 
 dotenv.config();
 
@@ -31,60 +31,69 @@ export default class CarMiddleware {
     }
   }
 
-
-  static hasToken(req, res, next) {
+  static isAdmin(req, res, next) {
+    req.isAdmin = false;
     const token = req.headers['x-access-token'];
-    try {
-      if (!token) {
-        next();
+    if (token) {
+      try {
+        jwt.verify(token, process.env.SECRET_KEY, (error, decoded) => {
+          authRepository.findById(decoded.id, queryById)
+            .then((result) => {
+              if (result.rows[0].isadmin === true) {
+                req.isAdmin = true;
+                req.decoded = decoded;
+                next();
+              } else {
+                req.decoded = decoded;
+                next();
+              }
+            }).catch(err => console.log(err));
+        });
+      } catch (err) {
+        next(new ApiError(401, 'Unauthorized', ['Failed to authenticate token']));
       }
-      jwt.verify(token, 'process.env.SECRET_KEY', (error, decoded) => {
-        try {
-          if (error) {
-            next();
-          }
-          req.decoded = decoded;
-          next();
-        } catch (err) {
-          next(err);
-        }
-      });
-    } catch (error) {
-      next(error);
+    } else {
+      next();
     }
   }
-
 
   static isOwner(req, res, next) {
     const userId = JSON.parse(req.decoded.id);
-    const car = carRepository.findById(Number(req.params.id));
-    try {
-      if (userId !== car.owner) {
-        throw new ApiError(401, 'Unauthorizied', ['You do not have permission to perform this action']);
-      }
-      next();
-    } catch (error) {
-      next(error);
-    }
-  }
-
-
-  static canDelete(req, res, next) {
-    const userId = JSON.parse(req.decoded.id);
-    const user = userRepository.findById(Number(req.params.id));
-    const car = carRepository.findById(Number(req.params.id));
-    if (car) {
+    const result = carRepository.findById(Number(req.params.id));
+    result.then((car) => {
+      console.log(car);
       try {
-        if (userId === car.owner || user.isAdmin === true) {
-          next();
-        } else {
+        if (userId !== car.rows[0].owner) {
           throw new ApiError(401, 'Unauthorizied', ['You do not have permission to perform this action']);
         }
+        next();
       } catch (error) {
         next(error);
       }
-    } else {
-      next(new ApiError(404, 'Not Found', ['The car is not in our database']));
-    }
+    }).catch((err) => {
+      console.log(err);
+      next(new ApiError(404, 'Not Found', ['User not found']));
+    });
+  }
+
+  static canDelete(req, res, next) {
+    const userId = JSON.parse(req.decoded.id);
+    const userQueryResult = authRepository.findById(Number(userId));
+    userQueryResult.then((userResult) => {
+      const carQueryResult = carRepository.findById(Number(req.params.id));
+      carQueryResult.then((carResult) => {
+        if (userId === carResult.rows[0].owner || userResult.rows[0].isadmin === true) {
+          next();
+        } else {
+          next(new ApiError(401, 'Unauthorizied', ['You do not have permission to perform this action']));
+        }
+      }).catch((error) => {
+        console.log(error);
+        next(new ApiError(404, 'Not Found', ['The car is not in our database']));
+      });
+    }).catch((error) => {
+      console.log(error);
+      next(new ApiError(404, 'Not Found', ['The user is not in our database']));
+    });
   }
 }

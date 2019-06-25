@@ -28,7 +28,7 @@ class EmailHelpers {
       },
     });
     const mailOptions = {
-      from: 'david1@gmail.com',
+      from: 'automartandela@gmail.com',
       to: user.email,
       subject: user.subject,
       html: user.body,

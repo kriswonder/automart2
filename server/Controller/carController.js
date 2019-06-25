@@ -1,13 +1,13 @@
+/* eslint-disable max-len */
 import carHelpers from '../Helpers/carHelpers';
 import ApiError from '../error/ApiError';
 import carRepository from '../repository/carRepository';
-import userRepository from '../repository/userRepository';
+import authRepository from '../repository/userRepository';
 import { queryById } from '../db/queries/authQueries';
 
 export default class CarController {
   // eslint-disable-next-line consistent-return
   static createCar(req, res, next) {
-    const userId = req.decoded.id;
     try {
       const carData = JSON.parse(req.body.data);
       carHelpers.validatePropsCreateCar(carData);
@@ -16,14 +16,14 @@ export default class CarController {
       const filePromises = carHelpers.fileUploadPromises(req.files, filekeys);
 
       Promise.all(filePromises).then((files) => {
-        const user = userRepository.findById(userId, queryById);
-        user.then(userData => carRepository.save(carData, userData, files))
+        const user = authRepository.findById(req.decoded.id, queryById);
+        user.then(userData => carRepository.save(carData, userData.rows[0], files))
           .then((car) => {
             res.status(201).json({
               status: 201,
-              message: `${car.manufacturer} ${car.model} Created`,
+              message: `${car.rows[0].manufacturer}  ${car.rows[0].model} 'Created'`,
               data: {
-                ...car,
+                ...car.rows[0],
               },
             });
           });
@@ -36,61 +36,53 @@ export default class CarController {
     }
   }
 
-
   static getCars(req, res) {
-    let cars = [];
-    if (req.decoded) {
-      const userId = JSON.parse(req.decoded.id);
-      const user = userRepository.findById(userId);
-      if (user.isAdmin === true) {
-        cars = carRepository.findAll();
-      } else {
-        cars = carRepository.findAllUnsold();
-      }
+    let results = {};
+    if (req.isAdmin === true) {
+      results = carRepository.findAll();
     } else {
-      cars = carRepository.findAllUnsold();
+      results = carRepository.findAllUnsold();
     }
-    if (req.query.manufacturer) {
-      // eslint-disable-next-line max-len
-      cars = cars.filter(car => req.query.manufacturer.toLowerCase() === car.manufacturer.toLowerCase());
-    }
-    if (req.query.state) {
-      cars = cars.filter(car => req.query.state.toLowerCase() === car.state.toLowerCase());
-    }
-    if (req.query.bodyType) {
-      cars = cars.filter(car => req.query.bodyType.toLowerCase() === car.bodyType.toLowerCase());
-    }
-    if (req.query.minPrice) {
-      cars = cars.filter(car => (Number(car.price) >= Number(req.query.minPrice)));
-    }
-    if (req.query.maxPrice) {
-      cars = cars.filter(car => (Number(car.price) <= Number(req.query.maxPrice)));
-    }
-    res.json({
-      status: 200,
-      message: 'success',
-      data: cars,
-    });
+    results.then((cars) => {
+      let carArray = cars.rows;
+      if (req.query.manufacturer) {
+        // eslint-disable-next-line max-len
+        carArray = carArray.filter(car => req.query.manufacturer.toLowerCase() === car.manufacturer.toLowerCase());
+      }
+      if (req.query.state) {
+        carArray = carArray.filter(car => req.query.state.toLowerCase() === car.state.toLowerCase());
+      }
+      if (req.query.bodytype) {
+        carArray = carArray.filter(car => req.query.bodytype.toLowerCase() === car.bodytype.toLowerCase());
+      }
+      if (req.query.minPrice) {
+        carArray = carArray.filter(car => (Number(car.price) >= Number(req.query.minPrice)));
+      }
+      if (req.query.maxPrice) {
+        carArray = carArray.filter(car => (Number(car.price) <= Number(req.query.maxPrice)));
+      }
+      res.json({
+        status: 200,
+        message: 'success',
+        data: carArray,
+      });
+    }).catch(error => console.log(error));
   }
 
   static updateCarStatus(req, res, next) {
     if (req.body.status) {
       if (req.body.status.toLowerCase() === 'sold' || req.body.status.toLowerCase() === 'unsold') {
-        const updatedCar = carRepository.update(req.params.id, req.body.status, null /* price */);
-        res.json({
-          status: 200,
-          message: `${updatedCar.manufacturer} ${updatedCar.model} Updated`,
-          data: {
-            id: updatedCar.id,
-            email: updatedCar.email,
-            createdOn: updatedCar.createdOn,
-            manufacturer: updatedCar.manufacturer,
-            model: updatedCar.model,
-            price: updatedCar.price,
-            state: updatedCar.state,
-            status: updatedCar.status,
-          },
-        });
+        const updateResult = carRepository.updateStatus(Number(req.params.id), req.body.status);
+        updateResult.then((result) => {
+          const updatedCar = result.rows[0];
+          res.json({
+            status: 200,
+            message: `${updatedCar.manufacturer} ${updatedCar.model} Updated`,
+            data: {
+              ...updatedCar,
+            },
+          });
+        }).catch(error => console.log(error));
       } else {
         next(new ApiError(400, 'Bad Request', ['Invalid status']));
       }
@@ -101,23 +93,18 @@ export default class CarController {
 
   static updateCarPrice(req, res, next) {
     if (req.body.price) {
-      console.log(typeof (Number(req.body.price)));
       if (typeof (Number(req.body.price)) === 'number' || req.body.price !== '') {
-        const updatedCar = carRepository.update(req.params.id, null, req.body.price);
-        res.json({
-          status: 200,
-          message: `${updatedCar.manufacturer} ${updatedCar.model} Updated`,
-          data: {
-            id: updatedCar.id,
-            email: updatedCar.email,
-            createdOn: updatedCar.createdOn,
-            manufacturer: updatedCar.manufacturer,
-            model: updatedCar.model,
-            price: updatedCar.price,
-            state: updatedCar.state,
-            status: updatedCar.status,
-          },
-        });
+        const updateResult = carRepository.updatePrice(Number(req.params.id), req.body.price);
+        updateResult.then((result) => {
+          const updatedCar = result.rows[0];
+          res.json({
+            status: 200,
+            message: `${updatedCar.manufacturer} ${updatedCar.model} Updated`,
+            data: {
+              ...updatedCar,
+            },
+          });
+        }).catch(error => console.log(error));
       } else {
         next(new ApiError(400, 'Bad Request', ['Invalid price']));
       }
@@ -127,57 +114,62 @@ export default class CarController {
   }
 
   static getCar(req, res, next) {
-    const car = carRepository.findById(Number(req.params.id));
-    if (car) {
-      res.json({
-        id: car.id,
-        owner: car.owner,
-        created_on: car.created_on,
-        state: car.state,
-        status: car.status,
-        price: car.price,
-        manufacturer: car.manufacturer,
-        model: car.model,
-        bodyType: car.bodyType,
-      });
-    } else {
-      next(new ApiError(400, 'Not Found', ['The car is not in our database']));
-    }
+    const queryResult = carRepository.findById(Number(req.params.id));
+    queryResult.then((result) => {
+      const car = result.rows[0];
+      if (car) {
+        res.status(200).json({
+          status: 200,
+          message: 'success',
+          data: {
+            ...car,
+          },
+        });
+      } else {
+        next(new ApiError(404, 'Not Found', ['The car is not in our database']));
+      }
+    }).catch(error => console.log(error));
   }
 
-
   static deleteCar(req, res, next) {
-    const deletedCar = carRepository.delete(Number(req.params.id));
-    if (deletedCar === true) {
-      res.status(200).json({
-        status: 200,
-        message: 'Request Successful',
-        data: 'Car Ad successfully deleted',
-      });
-    } else if (deletedCar === null) {
-      next(new ApiError(404, 'Not Found', ['The car is not in our database']));
-    } else {
-      next(new ApiError(403, 'Bad Request', ['Unable to delete AD']));
-    }
+    const deleteResult = carRepository.delete(Number(req.params.id));
+    deleteResult.then((result) => {
+      if (result.rowCount > 0) {
+        res.status(200).json({
+          status: 200,
+          message: 'Request Successful',
+          data: 'Car Ad successfully deleted',
+        });
+      } else {
+        next(new ApiError(403, 'Bad Request', ['Unable to delete AD']));
+      }
+    }).catch(error => console.log(error));
   }
 
   static flag(req, res, next) {
-    if (req.body.reason) {
-      const user = userRepository.findById(Number(req.decoded.id));
-      const car = carRepository.findById(Number(req.params.id));
-      const flag = carRepository.saveFlag(user.id, car.id, req.body);
-      res.status(200).json({
-        status: 200,
-        message: 'Car flaged',
-        data: {
-          id: flag.id,
-          carId: flag.carId,
-          reason: flag.reason,
-          description: flag.description,
-        },
-      });
+    if (req.body.reason && req.body.description) {
+      try {
+        const carQueryResult = carRepository.findById(Number(req.params.id));
+        carQueryResult
+          .then(carResult => carRepository.saveFlag(Number(req.decoded.id), carResult.rows[0].id, req.body))
+          .then((saveResult) => {
+            const flag = saveResult.rows[0];
+            res.status(200).json({
+              status: 200,
+              message: 'Car flaged',
+              data: {
+                ...flag,
+              },
+            });
+          }).catch((error) => {
+            console.log(error);
+            next(new ApiError(417, 'Expectation failed', ['Car could not be flagged']));
+          });
+      } catch (error) {
+        next(new ApiError(404, 'Not Found', ['Car not found']));
+      }
     } else {
-      next(new ApiError(400, 'Bad Request', ['Request not success']));
+      next(new ApiError(400, 'Bad Request', ['No reason provided']));
     }
   }
 }
