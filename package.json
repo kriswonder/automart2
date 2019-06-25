@@ -5,14 +5,16 @@
   "main": "server/app.js",
   "scripts": {
     "start:dev": "nodemon --exec babel-node server/app",
-    "test": "nyc --require @babel/register --reporter=lcov --reporter=text mocha --exit --timeout 90000 --recursive",
+    "test": "set NODE_ENV=test&& npm run migrate && npm run seedTable && nyc --reporter=text mocha --timeout 500000 --recursive --require @babel/register --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "nyc": "nyc --reporter=lcov npm run test && nyc report --reporter=text-lcov | coveralls",
     "coveralls": "nyc --reporter=lcov --reporter=text-lcov npm test",
     "build": "babel server -d lib",
     "start": "node lib/app.js",
     "heroku-build": "npm run build ",
     "migrate": "babel-node ./server/db/migrate",
-    "seedTable": "babel-node ./server/db/seed"
+    "seedTable": "babel-node ./server/db/seed",
+    "heroku-migrate": "node build/db/migrate.js"
   },
   "repository": {
     "type": "git",
@@ -25,6 +27,7 @@
   },
   "homepage": "https://github.com/kriswonder/automart2#readme",
   "dependencies": {
+    "@babel/polyfill": "^7.4.4",
     "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
     "chai": "^4.2.0",
@@ -53,6 +56,7 @@
     "@babel/register": "^7.4.4",
     "codeclimate-test-reporter": "^0.5.1",
     "coveralls": "^3.0.4",
+    "cross-env": "^5.2.0",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.17.3",
