@@ -14,7 +14,7 @@
     "heroku-build": "npm run build ",
     "migrate": "babel-node ./server/db/migrate",
     "seedTable": "babel-node ./server/db/seed",
-    "heroku-migrate": "node build/db/migrate.js"
+    "heroku-migrate": "node lib/db/migrate.js"
   },
   "repository": {
     "type": "git",
