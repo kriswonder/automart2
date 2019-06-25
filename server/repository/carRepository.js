@@ -2,9 +2,16 @@
 import db from '../db/db';
 import {
   createCar,
+  queryAll,
+  queryAllUnsold,
+  updateCarPrice,
+  updateCarStatus,
+  queryById,
+  createFlag,
+  deletecar,
 } from '../db/queries/carQueries';
 
-export default class carService {
+export default class CarRepository {
   static async save(car, user, files) {
     // eslint-disable-next-line no-plusplus
     for (let i = 0; i < files.length; i++) {
@@ -17,64 +24,46 @@ export default class carService {
       }
     }
 
-    const carData = [car.state, car.price, car.manufacturer, car.model, car.bodyType,
-      car.transmission, car.milage, car.year, car.exteriorImg,
+    const carData = [car.state, car.price, car.manufacturer, car.model,
+      car.bodyType, car.transmission, car.milage, car.year, car.exteriorImg,
       car.interiorImg, car.engineImg, user.email, user.id];
     const result = await db.query(createCar, carData);
     return result;
   }
 
-  // static findAll() {
-  //   const allCars = [];
-  //   // eslint-disable-next-line no-unused-vars
-  //   cars.forEach((value, key) => {
-  //     allCars.push(value);
-  //   });
-  //   return allCars;
-  // }
+  static async findAll() {
+    const result = await db.query(queryAll);
+    return result;
+  }
 
-  // static findAllUnsold() {
-  //   const allUnsoldCars = [];
-  //   // eslint-disable-next-line no-unused-vars
-  //   cars.forEach((value, key) => {
-  //     if (value.status === 'unsold') {
-  //       allUnsoldCars.push(value);
-  //     }
-  //   });
-  //   return allUnsoldCars;
-  // }
+  static async findAllUnsold() {
+    const result = await db.query(queryAllUnsold, ['available']);
+    return result;
+  }
 
-  // static findById(id) {
-  //   return cars.get(id);
-  // }
+  static async updateStatus(carId, status) {
+    const result = await db.query(updateCarStatus, [status, carId]);
+    return result;
+  }
 
-  // static update(carId, status, price) {
-  //   const car = cars.get(Number(carId));
-  //   if (price === null) {
-  //     car.status = status;
-  //   } else if (status === null) {
-  //     car.price = price;
-  //   }
-  //   car.updatedOn = Date.now();
-  //   cars.set(car.id, car);
-  //   return car;
-  // }
+  static async updatePrice(carId, price) {
+    const result = await db.query(updateCarPrice, [price, carId]);
+    return result;
+  }
 
-  // static delete(id) {
-  //   if (cars.has(id)) {
-  //     console.log('came here');
-  //     return cars.delete(id);
-  //   }
-  //   return 'Not Found';
-  // }
+  static async findById(carId) {
+    const result = await db.query(queryById, [carId]);
+    return result;
+  }
 
-  // static saveFlag(userId, carId, flag) {
-  //   flag.owner = userId;
-  //   flag.carId = carId;
-  //   flag.createdOn = Date.now();
-  //   flag.id = flags.size;
+  static async delete(carId) {
+    const result = await db.query(deletecar, [carId]);
+    return result;
+  }
 
-  //   flags.set(flag.id, flag);
-  //   return flags.get(flag.id);
-  // }
+  static async saveFlag(userId, carId, flagData) {
+    const carData = [flagData.reason, flagData.description, userId, carId];
+    const result = await db.query(createFlag, carData);
+    return result;
+  }
 }

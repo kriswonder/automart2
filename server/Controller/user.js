@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-
 import authHelpers from '../Helpers/user';
 import ApiError from '../error/ApiError';
 import userRepository from '../repository/userRepository';
@@ -24,7 +23,7 @@ export default class controller {
       const result = await userRepository.save(userData);
       const user = result.rows[0];
 
-      const token = jwt.sign({ id: user.id }, process.env.SECRET, { expiresIn: '24h' });
+      const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, { expiresIn: '24h' });
 
       res.status(201).json({
         status: 201,
@@ -52,7 +51,7 @@ export default class controller {
         if (error || !user) {
           next(error);
         } else {
-          const token = jwt.sign({ id: user.id }, process.env.SECRET, { expiresIn: '24h' });
+          const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, { expiresIn: '24h' });
           res.status(200).json({
             status: 200,
             message: `Welcome ${user.firstName} ${user.lastName}`,
@@ -134,7 +133,7 @@ export default class controller {
       const emailQuery = await userRepository.findByEmail(req.params.email);
       if (emailQuery.rows.length > 0) {
         const user = emailQuery.rows[0];
-        const token = jwt.sign({ id: user.id, password: user.password }, process.env.SECRET, { expiresIn: '24h' });
+        const token = jwt.sign({ id: user.id, password: user.password }, process.env.SECRET_KEY, { expiresIn: '24h' });
         const hashedPassword = await authHelpers.hashPassWord(token);
         const updatedResult = userRepository.updatePassword(user.id, hashedPassword);
         updatedResult.then((result) => {

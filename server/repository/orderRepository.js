@@ -1,26 +1,22 @@
-/* eslint-disable no-unused-expressions */
-/* eslint-disable no-param-reassign */
-const orders = new Map();
+import db from '../db/db';
+import {
+  createOrder,
+  queryById,
+  updateOrderPrice,
+} from '../db/queries/orderQueries';
 
-export default class CarRepository {
-  static save(buyer, order, originalPrice) {
-    order.id = orders.size;
-    order.buyer = buyer; // user id
-    order.sellersPrice = originalPrice;
-    order.status = 'pending';
-    order.createdOn = Date.now();
-
-    orders.set(order.id, order);
-
-    return order;
+export default class OrderRepository {
+  static async save(buyer, order) {
+    const orderData = [order.price, buyer, order.carId];
+    const result = await db.query(createOrder, orderData);
+    return result;
   }
 
   static findById(id) {
-    return orders.get(id);
+    return db.query(queryById, [id]);
   }
 
-  static update(order) {
-    orders.set(order.id, order);
-    return orders.get(order.id);
+  static update(price, id) {
+    return db.query(updateOrderPrice, [price, id]);
   }
 }

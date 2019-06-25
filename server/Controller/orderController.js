@@ -1,4 +1,4 @@
-/* eslint-disable max-len */
+/* eslint-disable no-unused-vars */
 import orderHelpers from '../Helpers/orderHelpers';
 import ApiError from '../error/ApiError';
 import orderRepository from '../repository/orderRepository';
@@ -7,52 +7,56 @@ import carRepository from '../repository/carRepository';
 export default class CarController {
   static createOrder(req, res, next) {
     const buyer = JSON.parse(req.decoded.id);
-    const car = carRepository.findById(Number(req.body.carId));
-    const errors = orderHelpers.validatePropsOrder(req.body);
     try {
-      if (errors.length > 0) {
-        throw new ApiError(400, 'Bad Request', errors);
-      } else if (!car) {
-        throw new ApiError(404, 'Not found', ['Car cannot be found']);
-      }
-      const order = orderRepository.save(Number(buyer), req.body, car.price);
-      res.status(201).json({
-        status: 200,
-        data: {
-          id: order.id,
-          carId: order.carId,
-          createdOn: order.createdOn,
-          status: order.status,
-          sellersPrice: order.sellersPrice,
-          offeredPrice: order.offeredPrice,
-        },
+      orderHelpers.validatePropsOrder(req.body);
+      const carResult = carRepository.findById(Number(req.body.carId));
+      carResult.then((car) => {
+        const orderResult = orderRepository.save(Number(buyer), req.body);
+        orderResult.then((order) => {
+          const originalPrice = car.rows[0].price;
+          res.status(201).json({
+            status: 201,
+            data: {
+              ...order.rows[0],
+              originalPrice,
+            },
+          });
+        }).catch((error) => {
+          next(new ApiError(417, 'Expectation failed', ['Order could not be made']));
+        });
+      }).catch((error) => {
+        next(new ApiError(404, 'Not found', ['Car cannot be found']));
       });
     } catch (error) {
       next(error);
     }
   }
 
-  static updateOrder(req, res, next) {
-    const errors = orderHelpers.validatePropsUpdateOrder(req.body);
+  static async updateOrder(req, res, next) {
     try {
-      if (errors.length > 0) {
-        throw new ApiError(400, 'Bad Request', errors);
+      orderHelpers.validatePropsUpdateOrder(req.body);
+      const orderResult = await orderRepository.findById(Number(req.params.id));
+      const oldPrice = orderResult.rows[0].amount;
+      if (orderResult.rows[0].status === 'pending') {
+        const updatedOrder = await orderRepository.update(req.body.price, Number(req.params.id));
+        const {
+          id, createdon, amount: newPrice, status, buyer, carid,
+        } = updatedOrder.rows[0];
+        res.status(200).json({
+          status: 200,
+          data: {
+            id,
+            createdon,
+            status,
+            buyer,
+            carid,
+            newPrice,
+            oldPrice,
+          },
+        });
+      } else {
+        next(new ApiError(400, 'Bad Request', ['Your order as already been accepted']));
       }
-      const order = orderRepository.findById(Number(req.params.id));
-      const oldPrice = order.offeredPrice;
-      order.offeredPrice = req.body.offeredPrice;
-      order.oldPrice = oldPrice;
-      const updatedOrder = orderRepository.update(order);
-      res.status(200).json({
-        status: 200,
-        data: {
-          id: updatedOrder.id,
-          carId: updatedOrder.carId,
-          status: updatedOrder.status,
-          oldOfferedPrice: updatedOrder.oldPrice,
-          newOfferedPrice: updatedOrder.offeredPrice,
-        },
-      });
     } catch (error) {
       next(error);
     }
