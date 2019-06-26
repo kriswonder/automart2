@@ -70,23 +70,20 @@ export default class controller {
 
   static async resetPassword(req, res, next) {
     if ((req.query.token
-     && req.body.password
-     && req.body.confirmPassword)
-     && (req.body.password === req.body.confirmPassword)) {
-      authHelpers.authenticate(req.params.email,
-        req.query.token, (error, user) => {
+       && req.body.password
+       && req.body.confirmPassword)) {
+      try {
+        authHelpers.validateSignUpPasswords(req.body.password, req.body.confirmPassword);
+        authHelpers.authenticate(req.params.email, req.query.token, (error, user) => {
           if (error || !user) {
             next(error);
           } else {
             const hashedPassword = authHelpers.hashPassWord(req.body.password);
+            // console.log(hashedPassword);
             const updatedResult = userRepository.updatePassword(user.id, hashedPassword);
             updatedResult.then((result) => {
-              try {
-                const details = MessageHelpers.resetSuccess(result.rows[0]);
-                EmailHelpers.sendMailMethod(details);
-              } catch (err) {
-                next(err);
-              }
+              const details = MessageHelpers.resetSuccess(result.rows[0]);
+              EmailHelpers.sendMailMethod(details);
               res.status(200).json({
                 status: 200,
                 message: 'Success',
@@ -94,41 +91,36 @@ export default class controller {
                   message: 'Password reset successful',
                 },
               });
-            }).catch((err) => {
-              console.log(err);
+            }).catch(() => {
               next(new ApiError(417, 'Expectation failed', ['Password could not be updated try again']));
             });
           }
         });
-    } else if ((req.body.password
-    && req.body.newPassword)) {
-      authHelpers.authenticate(req.params.email,
-        req.body.password, (error, user) => {
-          if (error || !user) {
-            next(error);
-          } else {
-            const hashedPassword = authHelpers.hashPassWord(req.body.newPassword);
-            const updatedResult = userRepository.updatePassword(user.id, hashedPassword);
-            updatedResult.then((result) => {
-              try {
-                const details = MessageHelpers.resetSuccess(result.rows[0]);
-                EmailHelpers.sendMailMethod(details);
-              } catch (err) {
-                next(err);
-              }
-              res.status(200).json({
-                status: 200,
-                message: 'Success',
-                data: {
-                  message: 'Password reset successful',
-                },
-              });
-            }).catch((err) => {
-              console.log(err);
-              next(new ApiError(417, 'Expectation failed', ['Password could not be updated try again']));
+      } catch (error) {
+        next(error);
+      }
+    } else if ((req.body.password && req.body.newPassword)) {
+      authHelpers.authenticate(req.params.email, req.body.password, (error, user) => {
+        if (error || !user) {
+          next(error);
+        } else {
+          const hashedPassword = authHelpers.hashPassWord(req.body.newPassword);
+          const updatedResult = userRepository.updatePassword(user.id, hashedPassword);
+          updatedResult.then((result) => {
+            const details = MessageHelpers.resetSuccess(result.rows[0]);
+            EmailHelpers.sendMailMethod(details);
+            res.status(200).json({
+              status: 200,
+              message: 'Success',
+              data: {
+                message: 'Password reset successful',
+              },
             });
-          }
-        });
+          }).catch(() => {
+            next(new ApiError(417, 'Expectation failed', ['Password could not be updated try again']));
+          });
+        }
+      });
     } else {
       const emailQuery = await userRepository.findByEmail(req.params.email);
       if (emailQuery.rows.length > 0) {
@@ -137,25 +129,21 @@ export default class controller {
         const hashedPassword = await authHelpers.hashPassWord(token);
         const updatedResult = userRepository.updatePassword(user.id, hashedPassword);
         updatedResult.then((result) => {
-          try {
-            const details = MessageHelpers.resetPassword(result.rows[0], token);
-            EmailHelpers.sendMailMethod(details);
-            res.status(200).json({
-              status: 200,
-              message: 'Success',
-              data: {
-                message: 'Password reset mail sent',
-              },
-            });
-          } catch (error) {
-            next(error);
-          }
-        }).catch((error) => {
-          console.log(error);
+          const details = MessageHelpers.resetPassword(result.rows[0], token);
+          EmailHelpers.sendMailMethod(details);
+          res.status(204).json({
+            status: 204,
+            message: 'Success',
+            data: {
+              message: 'Password reset successful',
+            },
+          });
+        }).catch((e) => {
+          console.log(e);
           next(new ApiError(417, 'Expectation failed', ['Password could not be updated try again']));
         });
       } else {
-        console.log('not found');
+        next(new ApiError(404, 'Not Found', ['User not found']));
       }
     }
   }

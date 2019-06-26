@@ -9,7 +9,7 @@ router.post('/signup', authMiddleWare.loggedIn, controller.signUp);
 
 router.post('/signin', authMiddleWare.loggedIn, controller.signIn);
 
-router.post('/:email/resetPassword', authMiddleWare.loggedIn, controller.resetPassword);
+router.post('/:email/resetPassword', controller.resetPassword);
 
 
 export default router;
