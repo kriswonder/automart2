@@ -1,175 +1,205 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
-import carHelpers from '../Helpers/carHelpers';
+import cloudinary from 'cloudinary';
+import CarUtil from '../Helpers/carHelpers';
 import ApiError from '../error/ApiError';
-import carRepository from '../repository/carRepository';
-import authRepository from '../repository/userRepository';
-import { queryById } from '../db/queries/authQueries';
+import CarRepository from '../repository/carRepository';
+import AuthRepository from '../repository/userRepository';
+import OrderRepository from '../repository/orderRepository';
+import ErrorDetail from '../error/ErrorDetail';
+
+cloudinary.v2.config({
+  cloud_name: 'kriswonder',
+  api_key: '687736945135221',
+  api_secret: 'yLlN7e4PgXCpFDNhY5T_47M1aGo',
+});
+
+const { validatePropsCreateCar } = CarUtil;
 
 export default class CarController {
   // eslint-disable-next-line consistent-return
-  static createCar(req, res, next) {
+  static async createCar(req, res, next) {
     try {
-      const carData = JSON.parse(req.body.data);
-      carHelpers.validatePropsCreateCar(carData);
+      const userId = req.decoded.id;
+      const props = ['price', 'state', 'manufacturer', 'model', 'body_type'];
 
-      const filekeys = Object.keys(req.files);
-      const filePromises = carHelpers.fileUploadPromises(req.files, filekeys);
+      const carProps = req.body;
+      validatePropsCreateCar(carProps, props);
 
-      Promise.all(filePromises).then((files) => {
-        const user = authRepository.findById(req.decoded.id, queryById);
-        user.then(userData => carRepository.save(carData, userData.rows[0], files))
-          .then((car) => {
-            res.status(201).json({
-              status: 201,
-              message: `${car.rows[0].manufacturer}  ${car.rows[0].model} 'Created'`,
-              data: {
-                ...car.rows[0],
-              },
-            });
-          });
-      // eslint-disable-next-line no-unused-vars
-      }).catch((error) => {
-        next(new ApiError(408, 'Request Timeout', 'Unable to upload Photos'));
+      const { rows: userRows } = await AuthRepository.findById(userId);
+      if (userRows.length < 1) {
+        throw new ApiError(404, 'Not Found', [new ErrorDetail('header', 'x-access-token', 'User not found', userId)]);
+      }
+      let exterior = '';
+      let interior = '';
+      let engine = '';
+
+      if (req.files) {
+        if (req.files.exterior) {
+          exterior = await cloudinary.v2.uploader.upload(req.files.exterior.path, { folder: 'exterior/', use_filename: true, unique_filename: false });
+        } else if (req.files.interior) {
+          interior = await cloudinary.v2.uploader.upload(req.files.interior.path, { folder: 'interior/', use_filename: true, unique_filename: false });
+        } else if (req.files.engine) {
+          engine = await cloudinary.v2.uploader.upload(req.files.engine.path, { folder: 'engine/', use_filename: true, unique_filename: false });
+        }
+        carProps.img_url = req.img_url;
+      }
+
+      carProps.exterior = exterior.url;
+      carProps.interior = interior.url;
+      carProps.engine = engine.url;
+
+      const { rows: carRows } = await CarRepository.save(carProps, userRows[0]);
+      if (userRows.length < 1) {
+        throw new ApiError(500, 'Internal Server Error', [new ErrorDetail('save', 'car data', 'no return value from save operation', carProps)]);
+      }
+      const car = carRows[0];
+
+      res.status(201).json({
+        status: 201,
+        message: `${car.manufacturer} ${car.model} Created`,
+        data: {
+          ...car,
+        },
+      });
+    } catch (e) {
+      console.log(e);
+      next(e);
+    }
+  }
+
+  static async getCars(req, res, next) {
+    let result = {};
+    try {
+      if (req.isAdmin === true) {
+        result = await CarRepository.findAll();
+      } else {
+        result = await CarRepository.findAllUnsold();
+      }
+      let carArray = result.rows;
+
+      if (req.query.manufacturer) {
+        carArray = await carArray.filter(car => req.query.manufacturer.toLowerCase() === car.manufacturer.toLowerCase());
+      }
+      if (req.query.state) {
+        carArray = await carArray.filter(car => req.query.state.toLowerCase() === car.state.toLowerCase());
+      }
+      if (req.query.body_type) {
+        carArray = await carArray.filter(car => req.query.body_type.toLowerCase() === car.body_type.toLowerCase());
+      }
+      if (req.query.min_price) {
+        carArray = await carArray.filter(car => (Number(car.price) >= Number(req.query.min_price)));
+      }
+      if (req.query.max_price) {
+        carArray = await carArray.filter(car => (Number(car.price) <= Number(req.query.max_price)));
+      }
+      res.status(200).json({
+        status: 200,
+        message: 'success',
+        data: carArray,
+      });
+    } catch (error) {
+      /* istanbul ignore next */
+      next(error);
+    }
+  }
+
+  static async updateCarStatus(req, res, next) {
+    try {
+      const { status } = req.body;
+
+      const { rows } = await CarRepository.updateStatus(Number(req.params.id), status);
+      if (rows.length < 1) {
+        throw new ApiError(500, 'Internal Server Error',
+          [new ErrorDetail('updateStatus', 'car id', 'no return value from update operation', req.params.id)]);
+      }
+
+      const updatedCar = rows[0];
+      res.status(200).json({
+        status: 200,
+        message: `${updatedCar.manufacturer} ${updatedCar.model} Updated`,
+        data: {
+          ...updatedCar,
+        },
+      });
+    } catch (error) {
+      /* istanbul ignore next */
+      next(error);
+    }
+  }
+
+  static async updateCarPrice(req, res, next) {
+    try {
+      const { rows } = await CarRepository.updatePrice(Number(req.params.id), req.body.price);
+      if (rows.length < 1) {
+        throw new ApiError(500, 'Internal Server Error',
+          [new ErrorDetail('updateCarPrice', 'car id', 'no return value from update operation', req.params.id)]);
+      }
+
+      const updatedCar = rows[0];
+      res.status(200).json({
+        status: 200,
+        message: `${updatedCar.manufacturer} ${updatedCar.model} Updated`,
+        data: {
+          ...updatedCar,
+        },
+      });
+    } catch (error) {
+      /* istanbul ignore next */
+      next(error);
+    }
+  }
+
+  static async getCar(req, res, next) {
+    try {
+      const { rows } = await CarRepository.findById(Number(req.params.id));
+      if (rows.length < 1) {
+        throw new ApiError(404, 'Not found',
+          [new ErrorDetail('param', 'car id', 'car was not found', req.params.id)]);
+      }
+      const car = rows[0];
+
+      res.status(200).json({
+        status: 200,
+        message: 'success',
+        data: {
+          ...car,
+        },
       });
     } catch (error) {
       next(error);
     }
   }
 
-  static getCars(req, res) {
-    let results = {};
-    if (req.isAdmin === true) {
-      results = carRepository.findAll();
-    } else {
-      results = carRepository.findAllUnsold();
-    }
-    results.then((cars) => {
-      let carArray = cars.rows;
-      if (req.query.manufacturer) {
-        // eslint-disable-next-line max-len
-        carArray = carArray.filter(car => req.query.manufacturer.toLowerCase() === car.manufacturer.toLowerCase());
-      }
-      if (req.query.state) {
-        carArray = carArray.filter(car => req.query.state.toLowerCase() === car.state.toLowerCase());
-      }
-      if (req.query.bodytype) {
-        carArray = carArray.filter(car => req.query.bodytype.toLowerCase() === car.bodytype.toLowerCase());
-      }
-      if (req.query.minPrice) {
-        carArray = carArray.filter(car => (Number(car.price) >= Number(req.query.minPrice)));
-      }
-      if (req.query.maxPrice) {
-        carArray = carArray.filter(car => (Number(car.price) <= Number(req.query.maxPrice)));
-      }
-      res.json({
+  static async deleteCar(req, res, next) {
+    try {
+      const { rows } = await CarRepository.delete(Number(req.params.id));
+      res.status(200).json({
         status: 200,
-        message: 'success',
-        data: carArray,
+        message: 'Request Successful',
+        data: 'Car Ad successfully deleted',
       });
-    }).catch(error => console.log(error));
-  }
-
-  static updateCarStatus(req, res, next) {
-    if (req.body.status) {
-      if (req.body.status.toLowerCase() === 'sold' || req.body.status.toLowerCase() === 'unsold') {
-        const updateResult = carRepository.updateStatus(Number(req.params.id), req.body.status);
-        updateResult.then((result) => {
-          const updatedCar = result.rows[0];
-          res.json({
-            status: 200,
-            message: `${updatedCar.manufacturer} ${updatedCar.model} Updated`,
-            data: {
-              ...updatedCar,
-            },
-          });
-        }).catch(error => console.log(error));
-      } else {
-        next(new ApiError(400, 'Bad Request', ['Invalid status']));
-      }
-    } else {
-      next(new ApiError(400, 'Bad Request', ['No status provided']));
+    } catch (error) {
+      /* istanbul ignore next */
+      next(error);
     }
   }
 
-  static updateCarPrice(req, res, next) {
-    if (req.body.price) {
-      if (typeof (Number(req.body.price)) === 'number' || req.body.price !== '') {
-        const updateResult = carRepository.updatePrice(Number(req.params.id), req.body.price);
-        updateResult.then((result) => {
-          const updatedCar = result.rows[0];
-          res.json({
-            status: 200,
-            message: `${updatedCar.manufacturer} ${updatedCar.model} Updated`,
-            data: {
-              ...updatedCar,
-            },
-          });
-        }).catch(error => console.log(error));
-      } else {
-        next(new ApiError(400, 'Bad Request', ['Invalid price']));
+  static async getOrderByCarId(req, res, next) {
+    const carId = Number(req.params.id);
+    try {
+      const { rows } = await OrderRepository.findBycarId(carId);
+      if (rows.length < 1) {
+        throw new ApiError(404, 'Not Found',
+          [new ErrorDetail('param', 'car id', 'car as not been ordered yet', carId)]);
       }
-    } else {
-      next(new ApiError(400, 'Bad Request', ['No price provided']));
-    }
-  }
 
-  static getCar(req, res, next) {
-    const queryResult = carRepository.findById(Number(req.params.id));
-    queryResult.then((result) => {
-      const car = result.rows[0];
-      if (car) {
-        res.status(200).json({
-          status: 200,
-          message: 'success',
-          data: {
-            ...car,
-          },
-        });
-      } else {
-        next(new ApiError(404, 'Not Found', ['The car is not in our database']));
-      }
-    }).catch(error => console.log(error));
-  }
-
-  static deleteCar(req, res, next) {
-    const deleteResult = carRepository.delete(Number(req.params.id));
-    deleteResult.then((result) => {
-      if (result.rowCount > 0) {
-        res.status(200).json({
-          status: 200,
-          message: 'Request Successful',
-          data: 'Car Ad successfully deleted',
-        });
-      } else {
-        next(new ApiError(403, 'Bad Request', ['Unable to delete AD']));
-      }
-    }).catch(error => console.log(error));
-  }
-
-  static flag(req, res, next) {
-    if (req.body.reason && req.body.description) {
-      try {
-        const carQueryResult = carRepository.findById(Number(req.params.id));
-        carQueryResult
-          .then(carResult => carRepository.saveFlag(Number(req.decoded.id), carResult.rows[0].id, req.body))
-          .then((saveResult) => {
-            const flag = saveResult.rows[0];
-            res.status(200).json({
-              status: 200,
-              message: 'Car flaged',
-              data: {
-                ...flag,
-              },
-            });
-          }).catch((error) => {
-            console.log(error);
-            next(new ApiError(417, 'Expectation failed', ['Car could not be flagged']));
-          });
-      } catch (error) {
-        next(new ApiError(404, 'Not Found', ['Car not found']));
-      }
-    } else {
-      next(new ApiError(400, 'Bad Request', ['No reason provided']));
+      res.status(200).json({
+        status: 200,
+        data: rows,
+      });
+    } catch (error) {
+      next(error);
     }
   }
 }

@@ -38,7 +38,7 @@ class EmailHelpers {
       if (error) {
         throw new ApiError(500, 'Server Error', ['Unable to send reset email']);
       }
-      console.log('messageSent!');
+      console.log('message Sent!');
     });
   }
 }

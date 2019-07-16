@@ -5,22 +5,36 @@ import multipart from 'connect-multiparty';
 import carMiddleWare from '../Middleware/carMiddleware';
 import carController from '../Controller/carController';
 
+const {
+  canWrite,
+  isOwner,
+  validateUpdateStatusProps,
+  validateUpdatePriceProps,
+  canDelete,
+  isAdmin,
+  // hasToken,
+} = carMiddleWare;
+const {
+  createCar, getCars, updateCarStatus, updateCarPrice, getCar, deleteCar, getOrderByCarId,
+
+} = carController;
+
+
 const multipartMiddleware = multipart();
 const router = express.Router();
 
-router.post('/', [multipartMiddleware, carMiddleWare.canWrite], carController.createCar);
+router.post('/', [multipartMiddleware, canWrite], createCar);
 
-router.get('/', carMiddleWare.isAdmin, carController.getCars);
+router.get('/', [canWrite, isAdmin], getCars);
 
-router.patch('/:id/status', [carMiddleWare.canWrite, carMiddleWare.isOwner], carController.updateCarStatus);
+router.patch('/:id/status', [canWrite, isOwner, validateUpdateStatusProps], updateCarStatus);
 
-router.patch('/:id/price', [carMiddleWare.canWrite, carMiddleWare.isOwner], carController.updateCarPrice);
+router.patch('/:id/price', [canWrite, isOwner, validateUpdatePriceProps], updateCarPrice);
 
-router.get('/:id', carMiddleWare.canWrite, carController.getCar);
+router.get('/:id', canWrite, getCar);
 
-router.delete('/:id', [carMiddleWare.canWrite, carMiddleWare.canDelete], carController.deleteCar);
+router.delete('/:id', [canWrite, canDelete], deleteCar);
 
-router.post('/:id/flag', carMiddleWare.canWrite, carController.flag);
-
+router.get('/:id/orders', [canWrite, isOwner], getOrderByCarId);
 
 export default router;

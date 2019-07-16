@@ -1,15 +1,40 @@
 import express from 'express';
-import controller from '../Controller/user';
-import authMiddleWare from '../Middleware/authMiddleware';
+
+import AuthMiddleware from '../Middleware/authMiddleware';
+import AuthController from '../Controller/user';
 
 const router = express.Router();
+const {
+  signUp,
+  signIn,
+  getUsers,
+  resetPassword,
+  updateStatus,
+  deleteUser,
+} = AuthController;
+
+const {
+  loggedIn,
+  validateSignUpProps,
+  validateSignInProps,
+  resetMapper,
+  canWrite,
+  canDelete,
+  isAdmin,
+} = AuthMiddleware;
 
 
-router.post('/signup', authMiddleWare.loggedIn, controller.signUp);
+router.post('/signup', [loggedIn, validateSignUpProps], signUp);
 
-router.post('/signin', authMiddleWare.loggedIn, controller.signIn);
+router.post('/signin', [loggedIn, validateSignInProps], signIn);
 
-router.post('/:email/resetPassword', controller.resetPassword);
+router.get('/users', canWrite, isAdmin, getUsers);
+
+router.patch('/:id/status', canWrite, isAdmin, updateStatus);
+
+router.post('/:email/resetPassword', resetMapper, resetPassword);
+
+router.delete('/', [canWrite, canDelete], deleteUser);
 
 
 export default router;
