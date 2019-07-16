@@ -1,150 +1,230 @@
-import jwt from 'jsonwebtoken';
+/* eslint-disable no-unused-vars */
+/* eslint-disable camelcase */
 import dotenv from 'dotenv';
-import authHelpers from '../Helpers/user';
+
+import AuthHelpers from '../Helpers/user';
 import ApiError from '../error/ApiError';
-import userRepository from '../repository/userRepository';
-import MessageHelpers from '../Helpers/messageHelpers';
+import AuthRepository from '../repository/userRepository';
 import EmailHelpers from '../Helpers/emailHelpers';
+import MessageHelpers from '../Helpers/messageHelpers';
+import ErrorDetail from '../error/ErrorDetail';
 
 dotenv.config();
 
-export default class controller {
+/**
+ * @class AuthController
+ * @description Contains methods for each authentication related endpoint
+ * @exports AuthController
+ */
+export default class AuthController {
+  /**
+   * @method signUp
+   * @description creates a user account
+   * @param {object} req - The Request Object
+   * @param {object} res - The Response Object
+   * @returns {object} JSON API Response
+   */
   static async signUp(req, res, next) {
     const {
-      firstName, lastName, email, address, password, confirmPassword,
+      first_name, last_name, email, address, password, phone,
     } = req.body;
 
     try {
-      authHelpers.validatePropsSignUp(req.body);
-      authHelpers.validateSignUpPasswords(password, confirmPassword);
+      const hashedPassword = await AuthHelpers.hashPassWord(password);
 
-      const hashedPassword = await authHelpers.hashPassWord(password);
-      const userData = [firstName, lastName, email, hashedPassword, address];
-      const result = await userRepository.save(userData);
-      const user = result.rows[0];
+      const userData = [first_name, last_name, email, hashedPassword, phone, address];
+      const result = await AuthRepository.save(userData);
+      if (result.rows[0]) {
+        const user = result.rows[0];
 
-      const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, { expiresIn: '24h' });
+        const token = AuthHelpers.generateToken({ id: user.id });
 
-      res.status(201).json({
-        status: 201,
-        message: `${user.firstName} ${user.lastName} Created`,
+        res.status(201).json({
+          status: 201,
+          message: `${user.first_name} ${user.last_name} Created`,
+          data: {
+            token,
+            ...user,
+          },
+        });
+      } else {
+        throw new ApiError(500, 'Internal Server Error', [new ErrorDetail('save', 'user data', 'no return value from save operation', req.body)]);
+      }
+    } catch (error) {
+      if (error.routine === '_bt_check_unique') {
+        next(new ApiError(409, 'Resource Conflict', [new ErrorDetail('body', 'user data', 'User already exist', req.body)]));
+      }
+      next(error);
+    }
+  }
+
+  /**
+   * @method signIn
+   * @description signs in an existing user account
+   * @param {object} req - The Request Object
+   * @param {object} res - The Response Object
+   * @returns {object} JSON API Response
+   */
+  static async signIn(req, res, next) {
+    const { email: userEmail, password } = req.body;
+
+    try {
+      const user = await AuthHelpers.authenticate(userEmail, password);
+
+      const {
+        id, first_name, last_name, email, phone, address, is_admin,
+      } = user;
+
+      const token = await AuthHelpers.generateToken({ id });
+
+      res.status(200).json({
+        status: 200,
+        message: `Welcome ${first_name} ${last_name}`,
         data: {
-          token,
-          ...user,
+          id, token, first_name, last_name, email, phone, address, is_admin,
         },
       });
     } catch (error) {
-      if (error.routine === '_bt_check_unique') {
-        next(new ApiError(409, 'Resource Conflict', ['User already exist']));
-      }
       next(error);
     }
   }
 
-  static async signIn(req, res, next) {
-    const {
-      email, password,
-    } = req.body;
+  static async getUsers(req, res, next) {
     try {
-      authHelpers.validatePropsSignIn(req.body);
-      authHelpers.authenticate(email, password, (error, user) => {
-        if (error || !user) {
-          next(error);
-        } else {
-          const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, { expiresIn: '24h' });
-          res.status(200).json({
-            status: 200,
-            message: `Welcome ${user.firstName} ${user.lastName}`,
-            data: {
-              token,
-              ...user,
-            },
-          });
-        }
+      const { rows } = await AuthRepository.findAll();
+      if (rows.length < 1) {
+        throw new ApiError(404, 'Not found',
+          [new ErrorDetail('null', 'query', 'No user are in the database yet', null)]);
+      }
+
+      res.status(200).json({
+        status: 200,
+        message: 'success',
+        data: rows,
       });
     } catch (error) {
+      /* istanbul ignore next */
       next(error);
     }
   }
 
-
-  static async resetPassword(req, res, next) {
-    if ((req.query.token
-       && req.body.password
-       && req.body.confirmPassword)) {
-      try {
-        authHelpers.validateSignUpPasswords(req.body.password, req.body.confirmPassword);
-        authHelpers.authenticate(req.params.email, req.query.token, (error, user) => {
-          if (error || !user) {
-            next(error);
-          } else {
-            const hashedPassword = authHelpers.hashPassWord(req.body.password);
-            // console.log(hashedPassword);
-            const updatedResult = userRepository.updatePassword(user.id, hashedPassword);
-            updatedResult.then((result) => {
-              const details = MessageHelpers.resetSuccess(result.rows[0]);
-              EmailHelpers.sendMailMethod(details);
-              res.status(200).json({
-                status: 200,
-                message: 'Success',
-                data: {
-                  message: 'Password reset successful',
-                },
-              });
-            }).catch(() => {
-              next(new ApiError(417, 'Expectation failed', ['Password could not be updated try again']));
-            });
-          }
-        });
-      } catch (error) {
-        next(error);
-      }
-    } else if ((req.body.password && req.body.newPassword)) {
-      authHelpers.authenticate(req.params.email, req.body.password, (error, user) => {
-        if (error || !user) {
-          next(error);
-        } else {
-          const hashedPassword = authHelpers.hashPassWord(req.body.newPassword);
-          const updatedResult = userRepository.updatePassword(user.id, hashedPassword);
-          updatedResult.then((result) => {
-            const details = MessageHelpers.resetSuccess(result.rows[0]);
-            EmailHelpers.sendMailMethod(details);
-            res.status(200).json({
-              status: 200,
-              message: 'Success',
-              data: {
-                message: 'Password reset successful',
-              },
-            });
-          }).catch(() => {
-            next(new ApiError(417, 'Expectation failed', ['Password could not be updated try again']));
-          });
-        }
+  static async deleteUser(req, res, next) {
+    try {
+      const { rows } = await AuthRepository.delete(req.decoded.id);
+      res.status(200).json({
+        status: 200,
+        message: 'Request Successful',
+        data: 'Car Ad successfully deleted',
       });
-    } else {
-      const emailQuery = await userRepository.findByEmail(req.params.email);
-      if (emailQuery.rows.length > 0) {
-        const user = emailQuery.rows[0];
-        const token = jwt.sign({ id: user.id, password: user.password }, process.env.SECRET_KEY, { expiresIn: '24h' });
-        const hashedPassword = await authHelpers.hashPassWord(token);
-        const updatedResult = userRepository.updatePassword(user.id, hashedPassword);
-        updatedResult.then((result) => {
-          const details = MessageHelpers.resetPassword(result.rows[0], token);
-          EmailHelpers.sendMailMethod(details);
-          res.status(204).json({
-            status: 204,
-            message: 'Success',
-            data: {
-              message: 'Password reset successful',
-            },
-          });
-        }).catch((e) => {
-          console.log(e);
-          next(new ApiError(417, 'Expectation failed', ['Password could not be updated try again']));
+    } catch (error) {
+      /* istanbul ignore next */
+      next(error);
+    }
+  }
+
+  static async updateStatus(req, res, next) {
+    try {
+      if (req.body.status !== true && req.body.status !== false) {
+        throw new ApiError(400, 'Bad Request',
+          [new ErrorDetail('body', 'status', 'invalid status', req.body.status)]);
+      }
+
+      const { rows } = await AuthRepository.updateStatus(req.params.id, req.body.status);
+      if (rows.length < 1) {
+        throw new ApiError(500, 'Internal Server Error',
+          [new ErrorDetail('updateStatus', 'user id', 'no return value from update operation', req.params.id)]);
+      }
+
+      res.status(200).json({
+        status: 200,
+        message: 'success',
+        data: {
+          ...rows[0],
+        },
+      });
+    } catch (error) {
+      /* istanbul ignore next */
+      next(error);
+    }
+  }
+
+  /**
+   * @method resetPassword
+   * @description depending on the form of request,
+   *  it will reset the users password, send a password reset token
+   * @param {object} req - The Request Object
+   * @param {object} res - The Response Object
+   * @returns {object} JSON API Response
+   */
+  static async resetPassword(req, res, next) {
+    try {
+      if (req.resetPath === 1) {
+        const { password, confirmPassword } = req.body;
+        AuthHelpers.passwordMatch(password, confirmPassword);
+
+        const user = await AuthHelpers.authenticate(req.params.email, req.query.token);
+
+        const hashedPassword = await AuthHelpers.hashPassWord(password);
+
+        AuthRepository.updatePassword(user.id, hashedPassword);
+        const details = MessageHelpers.resetSuccess(user);
+        EmailHelpers.sendMailMethod(details);
+        res.status(200).json({
+          status: 200,
+          message: 'Success',
+          data: {
+            message: 'Password reset successful',
+          },
+        });
+      } else if (req.resetPath === 2) {
+        const { password, newPassword } = req.body;
+
+        const user = await AuthHelpers.authenticate(req.params.email, password);
+
+        const hashedPassword = await AuthHelpers.hashPassWord(newPassword);
+
+        AuthRepository.updatePassword(user.id, hashedPassword);
+        const details = MessageHelpers.resetSuccess(user);
+        EmailHelpers.sendMailMethod(details);
+        res.status(200).json({
+          status: 200,
+          message: 'Success',
+          data: {
+            message: 'Password reset successful',
+          },
+        });
+      } else if (req.resetPath === 0) {
+        const { rows } = await AuthRepository.findByEmail(req.params.email);
+        if (rows.length < 1) {
+          throw new ApiError(404, 'Not user found', [new ErrorDetail('body', 'email', 'User not found', req.params.email)]);
+        }
+        const user = rows[0];
+
+        const token = AuthHelpers.generateToken({ id: user.id, password: user.password });
+        const hashedPassword = await AuthHelpers.hashPassWord(token);
+
+        const { rows: updatedUser } = await AuthRepository.updatePassword(user.id, hashedPassword);
+        const details = MessageHelpers.resetPassword(updatedUser, token);
+        EmailHelpers.sendMailMethod(details);
+
+        res.status(200).json({
+          status: 204,
+          message: 'No content',
+          data: {
+            token,
+            message: 'Password reset mail as been sent to you',
+          },
         });
       } else {
-        next(new ApiError(404, 'Not Found', ['User not found']));
+        throw new ApiError(400, 'Bad request', [
+          new ErrorDetail('updatePassword', 'reset data', 'Request not properly formatted',
+            ['token & password & confirmPassword',
+              'no token & password & newPassword',
+              'no token & no password & no newPassword, no confirmPassword']),
+        ]);
       }
+    } catch (error) {
+      next(error);
     }
   }
 }

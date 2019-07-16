@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 import '@babel/polyfill';
 import db from './db';
@@ -16,56 +17,76 @@ const queryTable = async () => {
     const userTable = await db.query(`CREATE TABLE IF NOT EXISTS 
     users(
         id SERIAL UNIQUE PRIMARY KEY,
-        firstName VARCHAR(50) NOT NULL,
-        lastNAme VARCHAR(50) NOT NULL,
+        first_name VARCHAR(50) NOT NULL,
+        last_name VARCHAR(50) NOT NULL,
         email VARCHAR(50) UNIQUE NOT NULL,
         password TEXT NOT NULL,
         phone TEXT NOT NULL,
         address VARCHAR(200) NOT NULL,
-        isAdmin BOOLEAN DEFAULT FALSE
+        is_admin BOOLEAN DEFAULT FALSE
     );`);
 
     const carTable = await db.query(`CREATE TABLE IF NOT EXISTS 
     cars(
         id SERIAL UNIQUE PRIMARY KEY,
-        createdOn TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         state TEXT,
         status TEXT DEFAULT 'available',
         price NUMERIC NOT NULL,
         manufacturer VARCHAR(50) NOT NULL,
         model VARCHAR(50) NOT NULL,
-        bodyType VARCHAR(50) NOT NULL,
+        body_type VARCHAR(50) NOT NULL,
         milage TEXT,
         transmission TEXT,
         year TEXT,
-        exteriorImg TEXT,
-        interiorImg TEXT,
-        engineImg TEXT,
-        ownerEmail VARCHAR(50) REFERENCES users(email) ON DELETE CASCADE,
+        exterior_img TEXT,
+        interior_img TEXT,
+        engine_img TEXT,
+        img_url TEXT,
+        location VARCHAR(200) DEFAULT 'no location',
         owner INTEGER REFERENCES users(id) ON DELETE CASCADE
     );`);
 
     const orderTable = await db.query(`CREATE TABLE IF NOT EXISTS 
     orders(
         id SERIAL UNIQUE PRIMARY KEY,
-        createdOn DATE DEFAULT CURRENT_TIMESTAMP,
+        created_on DATE DEFAULT CURRENT_TIMESTAMP,
         amount NUMERIC NOT NULL,
         status TEXT DEFAULT 'pending',
+        original_price NUMERIC NOT NULL,
         buyer INTEGER REFERENCES users(id) ON DELETE CASCADE,
-        carId INTEGER REFERENCES cars(id)
+        car_id INTEGER REFERENCES cars(id) ON DELETE CASCADE
     );`);
 
     const flagTable = await db.query(`CREATE TABLE IF NOT EXISTS 
     flags(
         id SERIAL UNIQUE PRIMARY KEY,
-        createdOn DATE DEFAULT CURRENT_TIMESTAMP,
+        created_on DATE DEFAULT CURRENT_TIMESTAMP,
         reason TEXT NOT NULL,
         description TEXT NOT NULL,
-        carId INTEGER REFERENCES cars(id) ON DELETE CASCADE
+        car_id INTEGER REFERENCES cars(id) ON DELETE CASCADE,
+        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE
     );`);
 
-    const values = ['admin', 'admin', 'admin@auto-mart.com', authHelpers.hashPassWord('admin'), '08055717283', '75 Victoria Island, Lagos', 'true'];
-    const admin = await db.query('INSERT into users(firstName, lastName, email, password, phone, address, isAdmin) VALUES($1,$2,$3,$4,$5,$6,$7)', values);
+    //   const queryAllUnsold = await db.query(`CREATE OR REPLACE FUNCTION queryAllUnsold(bodyType text DEFAULT NULL:: text,
+    //     state text DEFAULT NULL:: text, manufacturer text DEFAULT NULL:: text,
+    //     maxPice integer DEFAULT NULL:: integer, minPrice integer DEFAULT NULL:: integer)
+    //     RETURNS cars
+    //     LANGUAGE plpgsql
+    //     AS $$
+    //  BEGIN
+    //  RETURN QUERY
+    //  SELECT * FROM cars WHERE
+    //  ($1 IS NULL OR bodyType = $1 )
+    //  AND ($2 IS NULL OR state = $2 )
+    //  AND ($3 IS NULL OR manufacturer = $3 )
+    //  AND ($4 IS NULL OR price <= $4 )
+    //  AND ($5 IS NULL OR price >= $5 );
+    //  END;
+    //  $$`);
+
+    const values = ['admin', 'admin', 'admin@auto-mart.com', authHelpers.hashPassWord('admin'), '090555345674', '75 Bode-Thomas, Surulere, Lagos', 'true'];
+    const admin = await db.query('INSERT into users(first_name, last_name, email, password, phone, address, is_admin) VALUES($1,$2,$3,$4,$5,$6,$7)', values);
   } catch (err) {
     console.log(err.stack);
     return err.stack;

@@ -1,50 +1,56 @@
 /* eslint-disable no-unused-vars */
 import '@babel/polyfill';
 import express from 'express';
+
 import logger from 'morgan';
+import cors from 'cors';
+import bodyParser from 'body-parser';
 import swaggerUI from 'swagger-ui-express';
-// import bodyParser from 'body-parser';
-import router from './routes/index';
+import authRoutes from './routes/index';
 import carRoutes from './routes/carRoutes';
+import flagRoutes from './routes/flagRoutes';
 import orderRoutes from './routes/orderRoutes';
 import docs from '../swagger.json';
 
+const expressValidator = require('express-validator');
 
 const app = express();
 
 app.use(logger('dev'));
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(expressValidator());
 
-app.use(express.json());
-app.use(express.urlencoded({
-  extended: false,
-}));
-
-app.use('/api/v1/auth', router);
+app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/car', carRoutes);
+app.use('/api/v1/flag', flagRoutes);
 app.use('/api/v1/order', orderRoutes);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(docs));
 
-app.use('*', (req, res) => {
-  res.status(400).json({
-    success: false,
-    message: 'Route not found',
-  });
+app.use((req, res, next) => {
+  const err = new Error('Resource Not Found');
+  err.status = 404;
+  err.errors = ['Resource Not Found'];
+  next(err);
 });
 
-// eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
-  console.log('Nice!!');
-  res.json({
+  res.status(err.status).json({
     status: err.status || 500,
     message: err.message,
-    errors: err.errors,
+    error: err.errors,
   });
 });
 
-const port = process.env.PORT || 3000;
+let port;
+if (process.env.NODE_ENV === 'test') {
+  port = process.env.TEST_PORT || 3003;
+} else {
+  port = process.env.PORT || 3000;
+}
 
-app.listen(/* config.port || */ port, () => {
-  console.log(`server now running on ${port}`);
-});
+// eslint-disable-next-line no-console
+app.listen(port, () => console.log(`server running on port ${port}`));
 
 module.exports = app;

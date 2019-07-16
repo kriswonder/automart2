@@ -1,16 +1,22 @@
 /* eslint-disable consistent-return */
-import userRepository from '../repository/userRepository';
+import authHelpers from '../Helpers/user';
 import db from './db';
 
-const seedTable = () => {
+const seedTable = async () => {
   try {
-    const queryUser = db.query(`
-  INSERT INTO users ("firstname", "lastname", email, password, address, "isadmin") 
-  VALUES ('kris', 'okeke', 'okeke@gmail.com', '${userRepository.hashPassword('password')}', '7 victoria Island', false),
-  ('kingsley', 'okeke', 'prince@gmail.com', '${userRepository.hashPassword('password')}', '7 victoria Island', false),
-  ('stella', 'okeke', 'stella@gmail.com', '${userRepository.hashPassword('password')}', '7 victoria Island', false); `);
+    const queryUser = await db.query(`
+  INSERT INTO users (first_name, last_name, email, password, phone, address) 
+  VALUES ('john', 'doe', 'johndoe@gmail.com', '${authHelpers.hashPassWord('password')}', '090888777665', '75 Bode Thomas Surulere'),
+  ('manny', 'jenson', 'mannyjenson@gmail.com', '${authHelpers.hashPassWord('password')}', '090888777665', '75 Bode Thomas Surulere'),
+  ('sam', 'peterson', 'sam@gmail.com', '${authHelpers.hashPassWord('password')}','090888777665', '75 Bode Thomas Surulere'); `);
 
-    console.log(queryUser);
+    const queryCar = await db.query(`
+    INSERT INTO cars (state, price, manufacturer, model,
+      body_type, transmission, milage, year, exterior_img, owner, location)
+      VALUES ('new', '750000', 'Benz', 'SLS', 'coupe', 'automatic', '5000', '2020', 'https://res.cloudinary.com/automart-api/image/upload/v1561297529/exterior/HHHNT6zcV3E1_zZezHKf4gDH.png', 4, '75 Bode Thomas Surulere'),
+      ('new', '750000', 'Audi', 'maybach', 'coupe', 'manual', '5000', '1889', 'https://res.cloudinary.com/automart-api/image/upload/v1561297529/exterior/HHHNT6zcV3E1_zZezHKf4gDH.png', 3, '75 Bode Thomas Surulere');`);
+
+    // console.log(queryUser, queryCar);
   } catch (err) {
     // eslint-disable-next-line no-console
     console.log(err.stack);
