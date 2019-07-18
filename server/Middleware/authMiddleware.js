@@ -1,11 +1,13 @@
+/* eslint-disable import/no-duplicates */
 /* eslint-disable no-useless-escape */
 import jwt from 'jsonwebtoken';
 import ApiError from '../error/ApiError';
-import ErrorDetail from '../error/ErrorDetail';
+import ErrorDetail from '../error/ApiError';
 import AuthRepository from '../repository/userRepository';
 
 export default class AuthMiddleware {
   static validateSignUpProps(req, res, next) {
+    // next();
     req.check('email')
       .notEmpty()
       .withMessage('Email field is required')
