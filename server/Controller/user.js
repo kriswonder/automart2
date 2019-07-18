@@ -29,6 +29,9 @@ export default class AuthController {
       first_name, last_name, email, address, password, phone,
     } = req.body;
 
+    console.log(req.body);
+    console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT');
+
     try {
       const hashedPassword = await AuthHelpers.hashPassWord(password);
 
@@ -81,7 +84,7 @@ export default class AuthController {
         status: 200,
         message: `Welcome ${first_name} ${last_name}`,
         data: {
-          id, token, first_name, last_name, email, phone, address, is_admin,
+          id, token, first_name, last_name, phone, email, address, is_admin,
         },
       });
     } catch (error) {

@@ -36,7 +36,7 @@ class EmailHelpers {
 
     transport.sendMail(mailOptions, (error) => {
       if (error) {
-        throw new ApiError(500, 'Server Error', ['Unable to send reset email']);
+        console.log(error);
       }
       console.log('message Sent!');
     });

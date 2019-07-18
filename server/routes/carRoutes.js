@@ -15,8 +15,13 @@ const {
   // hasToken,
 } = carMiddleWare;
 const {
-  createCar, getCars, updateCarStatus, updateCarPrice, getCar, deleteCar, getOrderByCarId,
-
+  createCar,
+  getCars,
+  updateCarStatus,
+  updateCarPrice,
+  getCar,
+  deleteCar,
+  getOrderByCarId,
 } = carController;
 
 
